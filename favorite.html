@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOMAPO - お気に入り</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #FFF9F5;
+      min-height: 100vh;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #FFF9F5;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .status-bar {
+      padding: 16px 32px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3a3a3a;
+      flex-shrink: 0;
+    }
+
+    /* ヘッダー */
+    .header {
+      padding: 12px 22px 0;
+      flex-shrink: 0;
+    }
+    .header-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: #A8B2BE;
+      margin-top: 3px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* カテゴリタブ */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      padding: 14px 18px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      background: #fff;
+      color: #8B95A1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #43E97B, #4FACFE);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(67,233,123,0.3);
+    }
+
+    /* スクロールエリア */
+    .scroll-area {
+      flex: 1;
+      padding: 14px 18px 20px;
+    }
+    .page-safety {
+      padding: 8px 18px 100px;
+      text-align: center;
+    }
+    .page-safety a {
+      display: inline-block;
+      font-size: 11px;
+      color: #B07A00;
+      background: #FFF8DC;
+      border: 1px solid #FFE6A0;
+      border-radius: 14px;
+      padding: 7px 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* 件数バッジ */
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #E0FBF0;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1E8A55;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      margin-bottom: 12px;
+    }
+
+    /* 運動カード */
+    .exercise-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 14px 14px 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .exercise-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 4px 0 0 4px;
+    }
+    .c-teal::before   { background: linear-gradient(180deg, #43E97B, #38F9D7); }
+    .c-pink::before   { background: linear-gradient(180deg, #FF6B9D, #FF8E53); }
+    .c-blue::before   { background: linear-gradient(180deg, #4FACFE, #00F2FE); }
+    .c-yellow::before { background: linear-gradient(180deg, #FFD93D, #FF9F43); }
+    .c-purple::before { background: linear-gradient(180deg, #A29BFE, #6C5CE7); }
+
+    .ex-icon {
+      width: 50px; height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .i-teal   { background: #E0FBF0; }
+    .i-pink   { background: #FFE8F5; }
+    .i-blue   { background: #E8F4FF; }
+    .i-yellow { background: #FFF8DC; }
+    .i-purple { background: #F0EBFF; }
+    .i-green  { background: #E8FFF3; }
+    .i-orange { background: #FFF3E0; }
+
+    .ex-body { flex: 1; }
+    .ex-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .ex-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .ex-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .tg-teal   { background: #E0FBF0; color: #1E8A55; }
+    .tg-gray   { background: #F0F2F5; color: #636e72; }
+    .tg-pink   { background: #FFE8F5; color: #C0296E; }
+    .tg-blue   { background: #E8F4FF; color: #1565C0; }
+    .tg-yellow { background: #FFF9E0; color: #C8860A; }
+
+    .ex-meta { font-size: 11px; color: #A8B2BE; margin-top: 4px; }
+
+    .ex-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .fav-btn { font-size: 20px; cursor: pointer; }
+    .diff-stars { font-size: 11px; }
+
+    /* 空の状態 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .empty-emoji { font-size: 56px; margin-bottom: 16px; }
+    .empty-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .empty-sub {
+      font-size: 13px;
+      color: #A8B2BE;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    /* ボトムナビ */
+    .bottom-nav {
+      position: absolute;
+      bottom: 16px; left: 18px; right: 18px;
+      background: #fff;
+      border-radius: 28px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 6px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: #C0C8D0;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      min-width: 52px;
+    }
+    .nav-item.active { color: #38D39F; }
+    .nav-icon-wrap {
+      width: 40px; height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 19px;
+    }
+    .nav-item.active .nav-icon-wrap { background: #E0FBF0; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <div class="header">
+      <div class="header-title">⭐ お気に入り</div>
+      <div class="header-sub">よく使う運動をすぐ出せます</div>
+    </div>
+
+    <div class="tab-bar" id="tab-bar"></div>
+
+    <div class="scroll-area">
+      <div class="count-badge" id="count-badge">❤️ 0件保存中</div>
+      <div id="fav-list"></div>
+    </div>
+
+    <div class="page-safety">
+      <a href="index.html#safety">⚠️ ご利用前に「安全への注意」をご確認ください</a>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-icon-wrap">🏠</div>
+        <span>ホーム</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon-wrap">🔍</div>
+        <span>さがす</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon-wrap">⭐</div>
+        <span>お気に入り</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon-wrap">👤</div>
+        <span>設定</span>
+      </div>
+    </div>
+
+  </div>
+<script src="exercises-data.js"></script>
+<script src="favorites.js"></script>
+<script>
+const modeLabel = { solo:'👤 ひとり', pair:'👫 ペア', both:'👤👫 どちらも' };
+const modeClass = { solo:'tg-blue', pair:'tg-pink', both:'tg-yellow' };
+const tabBar = document.getElementById('tab-bar');
+const favList = document.getElementById('fav-list');
+const countBadge = document.getElementById('count-badge');
+
+let currentTab = 'all';
+
+function buildTabs() {
+  const tabs = [{ key:'all', label:'すべて' }];
+  Object.entries(window.CATEGORIES).forEach(([k, v]) => {
+    tabs.push({ key:k, label: v.emoji + ' ' + (v.name.length > 6 ? v.name.slice(0,5)+'…' : v.name) });
+  });
+  tabBar.innerHTML = tabs.map(t => `<div class="tab${t.key===currentTab?' active':''}" data-tab="${t.key}">${t.label}</div>`).join('');
+  tabBar.querySelectorAll('.tab').forEach(el => {
+    el.addEventListener('click', () => {
+      currentTab = el.getAttribute('data-tab');
+      buildTabs();
+      renderFavList();
+    });
+  });
+}
+
+function renderFavList() {
+  const favs = window.FAV.all();
+  // 解決：cat/idx → exercise + catName
+  const items = favs.map(f => {
+    const cat = window.CATEGORIES[f.cat];
+    if (!cat || !cat.exercises[f.idx]) return null;
+    return { catKey: f.cat, catName: cat.name, idx: f.idx, ex: cat.exercises[f.idx] };
+  }).filter(Boolean);
+  const filtered = currentTab === 'all' ? items : items.filter(x => x.catKey === currentTab);
+  countBadge.textContent = `❤️ ${items.length}件保存中` + (currentTab !== 'all' ? `（表示${filtered.length}件）` : '');
+  if (filtered.length === 0) {
+    favList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-emoji">⭐</div>
+        <div class="empty-title">${items.length === 0 ? 'まだお気に入りがありません' : 'このカテゴリには未保存です'}</div>
+        <div class="empty-sub">運動の詳細ページや一覧で<br>🤍をタップして追加できます</div>
+      </div>`;
+    return;
+  }
+  favList.innerHTML = filtered.map(({ catKey, catName, idx, ex }) => `
+    <div class="exercise-card c-teal" data-cat="${catKey}" data-idx="${idx}">
+      <div class="ex-icon ${ex.ic.replace('ic-','i-')}">${ex.icon}</div>
+      <div class="ex-body">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-tags">
+          ${ex.tags.map(t => `<span class="ex-tag tg-teal">${t}</span>`).join('')}
+          <span class="ex-tag ${modeClass[ex.mode]}">${modeLabel[ex.mode]}</span>
+        </div>
+        <div class="ex-meta">${ex.meta} · ${catName}</div>
+      </div>
+      <div class="ex-right">
+        <div class="fav-btn" data-fav>❤️</div>
+        <div class="diff-stars">★☆☆</div>
+      </div>
+    </div>
+  `).join('');
+  favList.querySelectorAll('.exercise-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('[data-fav]')) return;
+      const cat = card.getAttribute('data-cat');
+      const idx = card.getAttribute('data-idx');
+      location.href = `detail.html?cat=${cat}&idx=${idx}`;
+    });
+  });
+  favList.querySelectorAll('[data-fav]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.exercise-card');
+      const cat = card.getAttribute('data-cat');
+      const idx = parseInt(card.getAttribute('data-idx'), 10);
+      window.FAV.toggle(cat, idx);
+      renderFavList();
+    });
+  });
+}
+
+buildTabs();
+renderFavList();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

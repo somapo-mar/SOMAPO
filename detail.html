@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOMAPO - 運動詳細</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #FFF9F5;
+      min-height: 100vh;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #FFF9F5;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ヒーロー */
+    .hero {
+      background: linear-gradient(135deg, #43E97B 0%, #38F9D7 40%, #4FACFE 100%);
+      padding: 24px 22px 20px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .hero-circle1 { position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.15); border-radius: 50%; }
+    .hero-circle2 { position: absolute; bottom: -20px; left: 20px; width: 70px; height: 70px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; z-index: 2; }
+    .back-btn, .fav-btn {
+      width: 34px; height: 34px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; backdrop-filter: blur(8px); cursor: pointer;
+    }
+    .hero-body { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; }
+    .hero-emoji { font-size: 44px; }
+    .hero-title { font-size: 22px; font-weight: 900; color: #fff; font-family: 'M PLUS Rounded 1c', sans-serif; }
+    .hero-pills { display: flex; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: rgba(255,255,255,0.28); border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 20px; padding: 3px 9px;
+      font-size: 11px; color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif; font-weight: 700;
+    }
+
+    /* スクロールエリア */
+    .scroll-area { flex: 1; padding: 0 0 100px; }
+
+    /* セクション共通 */
+    .card-section {
+      background: #fff; border-radius: 24px;
+      padding: 16px 16px; margin: 12px 14px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .sec-title {
+      font-size: 13px; font-weight: 800; color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ===== 動作説明エリア ===== */
+    .motion-section {
+      background: #fff; border-radius: 24px;
+      padding: 16px; margin: 12px 14px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 3コマ */
+    .frames-row {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .frame {
+      flex: 1;
+      background: #F7F8FC;
+      border-radius: 16px;
+      padding: 10px 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border: 1.5px solid #ECEEF2;
+      position: relative;
+    }
+
+    .frame-num {
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 18px; height: 18px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, #43E97B, #4FACFE);
+      color: #fff;
+      font-size: 10px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .frame svg { width: 60px; height: 76px; }
+
+    .frame-caption {
+      font-size: 10px; font-weight: 700;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      text-align: center; line-height: 1.4;
+    }
+
+    /* ===== スティックマン・アニメーション ===== */
+    .motion-anim {
+      background: linear-gradient(135deg, #F0FDF8, #EEF6FF);
+      border-radius: 18px;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(67,233,123,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .motion-bg-circle {
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(67,233,123,0.08), transparent);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .motion-stage {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .motion-label {
+      position: absolute;
+      bottom: 8px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 700;
+      color: #1E8A55;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: rgba(255,255,255,0.85);
+      padding: 3px 12px; border-radius: 20px;
+      white-space: nowrap;
+      z-index: 3;
+    }
+    .motion-badge {
+      position: absolute;
+      top: 8px; right: 10px;
+      background: linear-gradient(135deg, #43E97B, #4FACFE);
+      color: #fff;
+      font-size: 10px; font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      padding: 3px 10px; border-radius: 20px;
+      z-index: 3;
+    }
+    .motion-svg { width: 140px; height: 175px; display: block; }
+
+    /* exercises.html と同じアニメーション */
+    @keyframes push    { 0%,100%{transform:translateX(0)} 40%,60%{transform:translateX(6px)} }
+    @keyframes walk    { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(3deg)} }
+    @keyframes balance { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+    @keyframes jump    { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
+    @keyframes roll    { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(15deg)} }
+    @keyframes pull    { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-5px)} }
+    @keyframes stretch { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.05)} }
+    @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+    @keyframes finger  { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-5deg)} }
+    .anim-push    { animation: push    1.8s ease-in-out infinite; transform-origin: bottom; }
+    .anim-walk    { animation: walk    1.2s ease-in-out infinite; transform-origin: bottom; }
+    .anim-balance { animation: balance 1.5s ease-in-out infinite; transform-origin: bottom; }
+    .anim-jump    { animation: jump    1.2s ease-in-out infinite; transform-origin: bottom; }
+    .anim-roll    { animation: roll    2s   ease-in-out infinite; transform-origin: center; }
+    .anim-pull    { animation: pull    1.5s ease-in-out infinite; transform-origin: center; }
+    .anim-stretch { animation: stretch 2s   ease-in-out infinite; transform-origin: bottom; }
+    .anim-breathe { animation: breathe 3s   ease-in-out infinite; transform-origin: center; }
+    .anim-finger  { animation: finger  1s   ease-in-out infinite; transform-origin: bottom; }
+
+    /* アプローチ */
+    .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .approach-item { border-radius: 16px; padding: 10px; display: flex; align-items: center; gap: 8px; }
+    .approach-item.primary { grid-column: span 2; background: linear-gradient(135deg, #E0FBF0, #D0F5FF); border: 1.5px solid rgba(67,233,123,0.25); }
+    .approach-item.secondary { background: #F7F8FC; }
+    .ap-icon { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .ap-teal { background: #E0FBF0; } .ap-blue { background: #E8F4FF; } .ap-yellow { background: #FFF8DC; }
+    .ap-label { font-size: 10px; color: #A8B2BE; font-family: 'M PLUS Rounded 1c', sans-serif; font-weight: 700; }
+    .ap-name { font-size: 12px; font-weight: 800; color: #2D3436; font-family: 'M PLUS Rounded 1c', sans-serif; }
+    .ap-desc { font-size: 11px; color: #6B7A8D; margin-top: 1px; line-height: 1.3; }
+
+    /* メタ情報 */
+    .meta-row { display: flex; gap: 7px; }
+    .meta-chip { flex: 1; background: #F7F8FC; border-radius: 14px; padding: 10px 6px; text-align: center; }
+    .meta-icon { font-size: 18px; }
+    .meta-label { font-size: 10px; color: #A8B2BE; font-family: 'M PLUS Rounded 1c', sans-serif; margin-top: 3px; }
+    .meta-value { font-size: 12px; font-weight: 800; color: #2D3436; font-family: 'M PLUS Rounded 1c', sans-serif; margin-top: 1px; }
+
+    /* やり方 */
+    .step-list { display: flex; flex-direction: column; gap: 9px; }
+    .step-item { display: flex; gap: 10px; align-items: flex-start; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 9px;
+      background: linear-gradient(135deg, #43E97B, #38F9D7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: #fff;
+      font-family: 'Nunito', sans-serif; flex-shrink: 0;
+    }
+    .step-text { font-size: 13px; color: #2D3436; line-height: 1.6; padding-top: 3px; }
+
+    /* ポイント・アレンジ */
+    .point-box { background: linear-gradient(135deg, #FFF8DC, #FFF3C0); border-radius: 14px; padding: 12px; display: flex; gap: 8px; border: 1.5px solid rgba(255,200,50,0.25); }
+    .arrange-box { background: linear-gradient(135deg, #F0EBFF, #EAE4FF); border-radius: 14px; padding: 12px; display: flex; gap: 8px; border: 1.5px solid rgba(162,155,254,0.25); }
+    .box-icon { font-size: 20px; flex-shrink: 0; }
+    .box-text { font-size: 13px; color: #2D3436; line-height: 1.6; }
+
+    /* スタートボタン */
+    .start-wrap { padding: 12px 14px 24px; }
+    .start-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #43E97B 0%, #38F9D7 50%, #4FACFE 100%);
+      border: none; border-radius: 20px; padding: 16px;
+      font-size: 16px; font-weight: 800; color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer; box-shadow: 0 8px 24px rgba(67,233,123,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .safety-link {
+      display: block;
+      text-align: center;
+      font-size: 12px;
+      color: #B07A00;
+      background: #FFF8DC;
+      border: 1px solid #FFE6A0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .safety-link:hover { background: #FFF1B8; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <div class="hero">
+      <div class="hero-circle1"></div>
+      <div class="hero-circle2"></div>
+      <div class="hero-top">
+        <div class="back-btn">←</div>
+        <div class="fav-btn" id="fav-btn">🤍</div>
+      </div>
+      <div class="hero-body">
+        <div class="hero-emoji">🧱</div>
+        <div>
+          <div class="hero-title">壁押し</div>
+          <div class="hero-pills">
+            <span class="hero-pill">👤 ひとり</span>
+            <span class="hero-pill">🕐 1〜2分</span>
+            <span class="hero-pill">★☆☆</span>
+            <span class="hero-pill">3歳〜</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+
+      <!-- ===== 動作説明（JS で動的生成） ===== -->
+      <div id="motion-section" class="motion-section"></div>
+
+      <!-- アプローチ -->
+      <div class="card-section">
+        <div class="sec-title">🎯 どこにアプローチ？</div>
+        <div class="approach-grid">
+          <div class="approach-item primary">
+            <div class="ap-icon ap-teal">🧠</div>
+            <div>
+              <div class="ap-label">メインのアプローチ</div>
+              <div class="ap-name">固有感覚の入力</div>
+              <div class="ap-desc">筋肉・関節への刺激で体の位置感覚を整えます</div>
+            </div>
+          </div>
+          <div class="approach-item secondary">
+            <div class="ap-icon ap-blue">😌</div>
+            <div>
+              <div class="ap-label">効果①</div>
+              <div class="ap-name">気持ちの落ち着き</div>
+              <div class="ap-desc">そわそわを鎮める</div>
+            </div>
+          </div>
+          <div class="approach-item secondary">
+            <div class="ap-icon ap-yellow">💪</div>
+            <div>
+              <div class="ap-label">効果②</div>
+              <div class="ap-name">体幹の安定</div>
+              <div class="ap-desc">姿勢の改善にも◎</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 基本情報 -->
+      <div class="card-section">
+        <div class="sec-title">📋 基本情報</div>
+        <div class="meta-row">
+          <div class="meta-chip"><div class="meta-icon">🧰</div><div class="meta-label">道具</div><div class="meta-value">なし</div></div>
+          <div class="meta-chip"><div class="meta-icon">🕐</div><div class="meta-label">時間</div><div class="meta-value">1〜2分</div></div>
+          <div class="meta-chip"><div class="meta-icon">👶</div><div class="meta-label">年齢</div><div class="meta-value">3歳〜</div></div>
+          <div class="meta-chip"><div class="meta-icon">📍</div><div class="meta-label">場所</div><div class="meta-value">室内</div></div>
+        </div>
+      </div>
+
+      <!-- やり方 -->
+      <div class="card-section">
+        <div class="sec-title">🏃 やり方</div>
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">壁の前に立ち、両手のひらを肩の高さで壁につける</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">壁を思い切り押すように、全身に力を入れる</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">5秒キープして、ゆっくり力を抜く</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">3〜5回くり返す。終わったら深呼吸しよう</div></div>
+        </div>
+      </div>
+
+      <!-- ポイント -->
+      <div class="card-section">
+        <div class="sec-title">💡 パパ・ママへのポイント</div>
+        <div class="point-box">
+          <div class="box-icon">💬</div>
+          <div class="box-text">「ぎゅーって壁をやっつけよう！」と声がけすると子どもが楽しく取り組めます。食事前や集中したい時の前に行うと特に効果的です。</div>
+        </div>
+      </div>
+
+      <!-- アレンジ -->
+      <div class="card-section">
+        <div class="sec-title">🌟 アレンジしてみよう</div>
+        <div class="arrange-box">
+          <div class="box-icon">✨</div>
+          <div class="box-text">慣れてきたら、床に手をついて「床押し」にチャレンジ！腕立て伏せの姿勢でキープするとさらに効果アップ。</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="start-wrap">
+      <a href="index.html#safety" class="safety-link">⚠️ 始める前に「安全への注意」を確認</a>
+    </div>
+
+  </div>
+<script src="svg-library.js"></script>
+<script src="favorites.js"></script>
+<script>
+const CATEGORIES = {
+  sowasowa: { name:'そわそわ・じっとできない', emoji:'🌀', gradient:'linear-gradient(135deg,#43E97B,#38F9D7,#4FACFE)',
+    exercises:[
+      { name:'壁押し', emoji:'🧱', mode:'👤 ひとり', time:'1〜2分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'固有感覚の入力', approachDesc:'筋肉・関節への刺激で体の位置感覚を整えます',
+        effect1:'😌', e1name:'気持ちの落ち着き', e1desc:'そわそわを鎮める',
+        effect2:'💪', e2name:'体幹の安定', e2desc:'姿勢の改善にも◎',
+        steps:['壁の前に立ち、両手のひらを肩の高さで壁につける','壁を思い切り押すように全身に力を入れる','5秒キープして、ゆっくり力を抜く','3〜5回くり返す。終わったら深呼吸しよう'],
+        tip:'「ぎゅーって壁をやっつけよう！」と声がけすると子どもが楽しく取り組めます。食事前や集中したい時の前に行うと特に効果的です。',
+        arrange:'慣れてきたら、床に手をついて「床押し」にチャレンジ！腕立て伏せの姿勢でキープするとさらに効果アップ。' },
+      { name:'重い荷物運び', emoji:'📚', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'本・ペットボトル', place:'室内',
+        approach:'固有感覚の入力', approachDesc:'重いものを持つことで筋肉・関節への刺激が入ります',
+        effect1:'😌', e1name:'気持ちの落ち着き', e1desc:'固有感覚でそわそわを落ち着かせる',
+        effect2:'💪', e2name:'体幹強化', e2desc:'バランスよく歩く力がつく',
+        steps:['本やペットボトルを両手に持つ','背筋を伸ばしてゆっくり歩く','部屋の端から端まで往復する','終わったら荷物を置いてリラックス'],
+        tip:'「お手伝いしてくれる？」と声がけすると自然に取り組めます。少し重めのものを選ぶと効果的です。',
+        arrange:'慣れてきたらリュックに荷物を入れて背負って歩いてみよう！' },
+      { name:'タオル引っ張り合い', emoji:'🧺', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'タオル', place:'室内',
+        approach:'固有感覚の入力', approachDesc:'引っ張る力で筋肉・関節に強い刺激が入ります',
+        effect1:'😌', e1name:'落ち着き', e1desc:'力を使うことで発散できる',
+        effect2:'🤝', e2name:'対人関係', e2desc:'力の加減を学べる',
+        steps:['タオルの両端を親子で持つ','「よーいドン！」で引っ張り合い','5〜10秒やったら休憩','3回くり返す'],
+        tip:'子どもが勝てるよう少し力を抜いてあげると達成感が生まれます。',
+        arrange:'タオルを結んで輪にするとより握りやすくなります。' },
+      { name:'くるみ巻き', emoji:'🛏', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'2歳〜', tool:'毛布', place:'室内',
+        approach:'触覚の統合', approachDesc:'全身を包むことで触覚・固有感覚が同時に刺激されます',
+        effect1:'😌', e1name:'リラックス', e1desc:'落ち着きをもたらす',
+        effect2:'🧠', e2name:'感覚統合', e2desc:'全身感覚を整える',
+        steps:['毛布を床に広げる','子どもが端に横になる','くるくると毛布で巻いていく','「ロールケーキだよ〜」と声がけ'],
+        tip:'嫌がる場合は無理をせず、最初は足だけ巻くなど少しずつ慣らしていきましょう。',
+        arrange:'ぐるぐる巻きにして「ミイラごっこ」にすると笑いながら取り組めます。' },
+      { name:'ぎゅっとハグ', emoji:'🫂', mode:'👫 ペア', time:'1〜2分', diff:'★☆☆', age:'2歳〜', tool:'なし', place:'室内',
+        approach:'触覚の入力', approachDesc:'しっかり抱きしめることで深部感覚に刺激が入ります',
+        effect1:'😌', e1name:'安心感', e1desc:'セロトニンが分泌される',
+        effect2:'❤️', e2name:'愛着形成', e2desc:'親子の絆を深める',
+        steps:['向かい合って立つか座る','「ぎゅーっ」と言いながら抱きしめる','5〜10秒キープ','ゆっくり離す'],
+        tip:'子どものペースに合わせて。嫌がるときは無理せずタッチから始めましょう。',
+        arrange:'後ろから抱きしめる「バックハグ」も効果的です。' },
+      { name:'雑巾がけ競争', emoji:'🧹', mode:'👤👫 どちらも', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'雑巾', place:'室内',
+        approach:'体幹・固有感覚', approachDesc:'四つん這いで押すことで体幹と腕の固有感覚が強化されます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'姿勢づくりの基礎に',
+        effect2:'😌', e2name:'発散', e2desc:'力を使って気持ちをすっきり',
+        steps:['床に雑巾を置き、両手で押さえる','四つん這いの姿勢で雑巾を押して進む','部屋の端まで進んだらゴール','ゲーム感覚で何回か挑戦'],
+        tip:'「床をピカピカにしよう！」と声がけするとお手伝いとして楽しめます。',
+        arrange:'親子で競争するとさらに盛り上がります！' },
+      { name:'クッション挟みジャンプ', emoji:'🛋', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'クッション', place:'室内',
+        approach:'固有感覚・体幹', approachDesc:'挟む力でひざや股関節に強い刺激が入ります',
+        effect1:'😌', e1name:'落ち着き', e1desc:'固有感覚の入力で鎮静効果',
+        effect2:'💪', e2name:'体幹強化', e2desc:'ジャンプで全身を使う',
+        steps:['クッションをひざや太ももの間に挟む','クッションを落とさないようにジャンプ','5〜10回くり返す','休憩してからまた挑戦'],
+        tip:'「クッションを落としたら負け！」とゲームにすると集中して取り組めます。',
+        arrange:'ジャンプせずにその場でギュギュッと挟むだけでも効果があります。' },
+      { name:'腕立て伏せキープ', emoji:'🏋️', mode:'👤 ひとり', time:'1〜2分', diff:'★★☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'体幹・固有感覚', approachDesc:'腕・肩・体幹に同時に固有感覚が入ります',
+        effect1:'💪', e1name:'体幹強化', e1desc:'全身の安定性が上がる',
+        effect2:'😌', e2name:'落ち着き', e2desc:'力を入れることで鎮静効果',
+        steps:['うつ伏せから両手を肩の下について体を持ち上げる','体を一直線に保って5秒キープ','ゆっくり下ろして休む','3〜5回くり返す'],
+        tip:'「板みたいにまっすぐ！」と声がけすると姿勢が安定します。最初は3秒から始めてOK。',
+        arrange:'膝をついて行うと少し楽になります。慣れてきたら足を高くしてみよう。' },
+      { name:'重い本を背中にハイハイ', emoji:'📖', mode:'👤👫 どちらも', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'本', place:'室内',
+        approach:'固有感覚・体幹', approachDesc:'背中の重さを感じながら動くことで固有感覚が強化されます',
+        effect1:'🧠', e1name:'感覚統合', e1desc:'全身の感覚を使って動く',
+        effect2:'💪', e2name:'体幹強化', e2desc:'バランスを保つ力がつく',
+        steps:['四つん這いになり、背中に本を乗せてもらう','本を落とさないようゆっくりハイハイで進む','部屋の端まで行ったら折り返す','3〜5往復する'],
+        tip:'最初は薄い本から始めて、慣れたら少し重くしていきましょう。',
+        arrange:'コースを作って障害物ハイハイにするとさらに楽しい！' },
+      { name:'椅子の下くぐりUターン', emoji:'🪑', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'3歳〜', tool:'椅子', place:'室内',
+        approach:'感覚統合', approachDesc:'くぐる動作で全身の感覚統合と空間認識が促されます',
+        effect1:'🧠', e1name:'感覚統合', e1desc:'全身を使った感覚の統合',
+        effect2:'😌', e2name:'集中力', e2desc:'コースをクリアする達成感',
+        steps:['椅子を数脚並べてコースを作る','四つん這いや低い姿勢でくぐっていく','コースの端まで行ったらUターン','何往復かチャレンジ'],
+        tip:'「くぐれるかな？」とチャレンジ感を出すと自分から取り組みます。',
+        arrange:'椅子の高さを変えたり、トンネルの長さを変えてみよう！' },
+    ]
+  },
+  posture: { name:'姿勢が崩れやすい', emoji:'🧍', gradient:'linear-gradient(135deg,#FF6B9D,#FF8E53)',
+    exercises:[
+      { name:'クマ歩き', emoji:'🐻', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'体幹・肩甲帯', approachDesc:'手足を同時に使うことで体幹と肩周りが鍛えられます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'姿勢づくりの基礎に',
+        effect2:'🧠', e2name:'協調性', e2desc:'手足の連携が向上',
+        steps:['手と足を床につけ四つん這いになる','右手と左足を同時に出して前に進む','部屋の端まで進んだら折り返す','3〜5往復する'],
+        tip:'「クマさんになりきって！」と声がけすると楽しく取り組めます。',
+        arrange:'慣れたら後ろ向きクマ歩きにもチャレンジしてみよう！' },
+      { name:'カニ歩き', emoji:'🦀', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'体幹・協調性', approachDesc:'横移動で体幹と左右の協調性が鍛えられます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'体の安定性が向上',
+        effect2:'🧠', e2name:'協調性', e2desc:'左右の動きをまとめる力',
+        steps:['手足を床につけ四つん這いになる','手足を横に動かして横向きに進む','片方向に5歩進んだら逆方向へ','3〜5往復する'],
+        tip:'「カニさんはどっちに進む？」と声がけすると方向を意識できます。',
+        arrange:'前後ではなく横に移動するよう意識させてみよう！' },
+      { name:'ブリッジ', emoji:'🌉', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'体幹・背筋', approachDesc:'お腹を持ち上げることで体幹と背筋が強化されます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'姿勢保持の力がつく',
+        effect2:'🌟', e2name:'柔軟性', e2desc:'背中の柔軟性が向上',
+        steps:['仰向けに寝て膝を曲げ足を床につける','両手は体の横に置く','お尻をゆっくり持ち上げる','5秒キープしてゆっくり下ろす'],
+        tip:'「お腹を天井に向けて！」と声がけすると正しい姿勢になります。',
+        arrange:'慣れたら片足を上げてみよう！難易度がアップします。' },
+      { name:'飛行機ポーズ', emoji:'✈️', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'バランス・体幹', approachDesc:'片足立ちで体幹とバランス感覚が鍛えられます',
+        effect1:'⚖️', e1name:'バランス', e1desc:'片足でのバランス力向上',
+        effect2:'💪', e2name:'体幹強化', e2desc:'体の軸をつくる',
+        steps:['立った状態から片足を後ろに上げる','両手を横に広げる','飛行機のように水平を保つ','5秒キープして反対の足へ'],
+        tip:'「ぶーん！飛行機だよ！」と声がけすると楽しくできます。',
+        arrange:'目を閉じて挑戦するとさらに難しくなります！' },
+      { name:'ボールうつ伏せ', emoji:'🟡', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'4歳〜', tool:'バランスボール', place:'室内',
+        approach:'体幹・固有感覚', approachDesc:'不安定な面でバランスをとることで体幹が鍛えられます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'体の芯をつくる',
+        effect2:'🧠', e2name:'感覚統合', e2desc:'バランス感覚が向上',
+        steps:['ボールの上にうつ伏せになる','両手・両足を床につけてバランスをとる','少しずつ手・足を持ち上げてみる','30秒〜1分キープ'],
+        tip:'最初は大人が支えながら行いましょう。徐々に一人でできるようになります。',
+        arrange:'ボールに乗ったまま前後に揺れてみよう！' },
+      { name:'本を頭に乗せて歩く', emoji:'📚', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'5歳〜', tool:'本', place:'室内',
+        approach:'姿勢意識', approachDesc:'頭の上のものを意識することで自然と良い姿勢になります',
+        effect1:'🧍', e1name:'姿勢改善', e1desc:'良い姿勢を体で覚える',
+        effect2:'🎯', e2name:'集中力', e2desc:'落とさないよう集中できる',
+        steps:['薄めの本を頭の上に乗せる','落とさないようゆっくり歩く','部屋の端まで歩いて往復する','慣れたら少し速く歩いてみよう'],
+        tip:'「お姫様みたいに歩こう！」と声がけするととても張り切ります。',
+        arrange:'本2冊に増やしたり、方向転換を入れてみよう！' },
+      { name:'壁に背をつけて立つ', emoji:'🧱', mode:'👤 ひとり', time:'1〜2分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'姿勢認識', approachDesc:'壁との接触で正しい姿勢を体に覚えさせます',
+        effect1:'🧍', e1name:'姿勢認識', e1desc:'良い姿勢を感覚で覚える',
+        effect2:'😌', e2name:'落ち着き', e2desc:'壁に触れることで安定感',
+        steps:['壁に背中をぴったりつけて立つ','かかと・お尻・背中・頭を壁につける','その姿勢で10秒キープ','壁から離れてその姿勢を保つ'],
+        tip:'「壁と友達になろう！」と声がけすると喜びます。',
+        arrange:'壁から離れたあと目を閉じて良い姿勢をキープしてみよう。' },
+      { name:'タオルを背中に挟んで歩く', emoji:'🧺', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'タオル', place:'室内',
+        approach:'姿勢意識', approachDesc:'背中で挟む意識で肩甲骨が動き姿勢が整います',
+        effect1:'🧍', e1name:'姿勢改善', e1desc:'背中の意識が高まる',
+        effect2:'💪', e2name:'肩甲帯強化', e2desc:'肩周りの筋肉を使う',
+        steps:['折りたたんだタオルを両肩甲骨の間に挟む','落とさないよう背筋を伸ばして歩く','部屋を一周する','3〜5周繰り返す'],
+        tip:'「タオルを落とさないようにしてね」とゲーム感覚で取り組みましょう。',
+        arrange:'腕を動かしながら歩いても落とさないように挑戦してみよう！' },
+      { name:'うつ伏せで足バタバタ', emoji:'🦵', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'背筋・体幹', approachDesc:'うつ伏せで足を動かすことで背筋と体幹が鍛えられます',
+        effect1:'💪', e1name:'背筋強化', e1desc:'姿勢保持の力がつく',
+        effect2:'🧠', e2name:'感覚統合', e2desc:'うつ伏せ姿勢での感覚入力',
+        steps:['床にうつ伏せになる','両手は顎の下に置く','足を交互にバタバタ動かす','10〜20回繰り返す'],
+        tip:'「泳いでいるみたい！」と声がけすると楽しく取り組めます。',
+        arrange:'足バタバタと腕バタバタを同時にやってみよう！' },
+      { name:'タオルの綱引き', emoji:'🪢', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'タオル', place:'室内',
+        approach:'体幹・固有感覚', approachDesc:'引っ張り合いで全身の体幹と固有感覚が強化されます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'全身の安定性向上',
+        effect2:'😌', e2name:'落ち着き', e2desc:'力を使うことで気持ちが落ち着く',
+        steps:['タオルの両端を二人で持つ','合図で引っ張り合い開始','10秒続けたら休憩','3回繰り返す'],
+        tip:'「せーの！」のかけ声で一緒に始めると協調性が育まれます。',
+        arrange:'床に座って行うと安全に楽しめます。' },
+    ]
+  },
+  balance: { name:'バランスが苦手', emoji:'⚖️', gradient:'linear-gradient(135deg,#FFD93D,#FF9F43)',
+    exercises:[
+      { name:'飛び石渡り', emoji:'🪨', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'クッション', place:'室内',
+        approach:'バランス・集中', approachDesc:'不安定な面を渡ることでバランス感覚と集中力が鍛えられます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'足裏からの感覚入力',
+        effect2:'🎯', e2name:'集中力', e2desc:'落ちないよう集中できる',
+        steps:['クッションを飛び石のように床に並べる','クッションを踏み外さないよう渡る','渡り切ったら折り返す','3〜5往復する'],
+        tip:'「川に落ちないように渡ろう！」と声がけすると大盛り上がりです。',
+        arrange:'クッションの間隔を広げると難易度アップ！' },
+      { name:'ケンケンパ', emoji:'🦶', mode:'👤 ひとり', time:'5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内・屋外',
+        approach:'バランス・協調性', approachDesc:'片足ジャンプで前庭感覚とバランス感覚が鍛えられます',
+        effect1:'⚖️', e1name:'バランス', e1desc:'片足立ちの安定性向上',
+        effect2:'🧠', e2name:'協調性', e2desc:'左右のリズムが整う',
+        steps:['「ケンケン」は片足ジャンプ','「パ」は両足を開いてジャンプ','リズムよく繰り返す','慣れたらスピードアップ'],
+        tip:'最初はゆっくり、慣れてきたらテンポアップしましょう。',
+        arrange:'テープで〇を作ってコースにすると楽しさアップ！' },
+      { name:'スローモーション歩き', emoji:'🚶', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'バランス感覚', approachDesc:'ゆっくり動くことでバランス感覚と体幹が鍛えられます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'ゆっくりの動きで感覚入力',
+        effect2:'🧘', e2name:'落ち着き', e2desc:'ゆっくり動くことで気持ちも整う',
+        steps:['できるだけゆっくり歩く','一歩踏み出すのに5秒かける','壁を伝いながら行うとより安全','部屋の端まで超スローで歩く'],
+        tip:'「ロボットみたいにゆっくり！」と声がけすると楽しめます。',
+        arrange:'目を閉じてさらにゆっくり歩いてみよう。' },
+      { name:'目閉じ片足立ち', emoji:'🧘', mode:'👤 ひとり', time:'1〜2分', diff:'★★☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'前庭感覚・バランス', approachDesc:'視覚を使わないことで前庭感覚が強化されます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'前庭感覚が鍛えられる',
+        effect2:'🧠', e2name:'集中力', e2desc:'感覚に集中する力がつく',
+        steps:['壁の近くに立つ','片足を少し上げる','目を閉じてバランスをとる','10秒キープ、反対の足へ'],
+        tip:'最初は目を開けたまま片足立ちから始めましょう。転倒注意！',
+        arrange:'腕を広げるとバランスがとりやすくなります。' },
+      { name:'ボールに座ってバランス', emoji:'🟡', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'4歳〜', tool:'バランスボール', place:'室内',
+        approach:'体幹・前庭感覚', approachDesc:'不安定な球面に座ることで体幹と前庭感覚が刺激されます',
+        effect1:'💪', e1name:'体幹強化', e1desc:'座るだけで体幹が働く',
+        effect2:'⚖️', e2name:'バランス感覚', e2desc:'前庭感覚が活性化される',
+        steps:['ボールの上に座る','足は肩幅に開いて床につける','ゆっくり左右に揺れる','前後にも揺れてみる'],
+        tip:'最初は大人が横で支えてあげましょう。慣れると一人でできます。',
+        arrange:'足を少し浮かせてバランスに挑戦！' },
+      { name:'ラインの上を歩く', emoji:'➡️', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'テープ', place:'室内',
+        approach:'バランス・集中', approachDesc:'細い線の上を歩くことでバランスと集中力が鍛えられます',
+        effect1:'⚖️', e1name:'バランス', e1desc:'細い道でのバランス感覚',
+        effect2:'🎯', e2name:'集中力', e2desc:'線から外れないよう集中',
+        steps:['マスキングテープで直線を床に貼る','テープの上を踏み外さないよう歩く','往復する','曲線やジグザグに貼っても楽しい'],
+        tip:'「綱渡りだよ！」と声がけすると集中して取り組みます。',
+        arrange:'テープを折れ線やS字にするとさらに楽しい！' },
+      { name:'後ろ歩き', emoji:'🔙', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'バランス・空間認知', approachDesc:'後ろ向きに歩くことでバランスと空間認知が強化されます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'通常と逆の動きで刺激',
+        effect2:'🧠', e2name:'空間認知', e2desc:'後ろの空間を把握する力',
+        steps:['障害物がない広いスペースを確保','後ろ向きにゆっくり歩く','壁まで歩いたら折り返す','3〜5往復する'],
+        tip:'安全のために必ず周りを確認してから行いましょう。',
+        arrange:'慣れたら少しずつスピードを上げてみよう！' },
+      { name:'目閉じその場足踏み', emoji:'👣', mode:'👤 ひとり', time:'2〜3分', diff:'★★☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'バランス・前庭感覚', approachDesc:'目を閉じることで前庭感覚がより強く刺激されます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'前庭感覚が活性化',
+        effect2:'🧠', e2name:'空間認知', e2desc:'体の傾きを感じる力',
+        steps:['その場で目を閉じて立つ','その場で高く足踏みを30回','目を開けて最初の位置からずれていないか確認','ずれを意識しながら繰り返す'],
+        tip:'最初は10回から始めて少しずつ増やしましょう。',
+        arrange:'どれだけ元の位置に近いか記録してゲームにしよう！' },
+      { name:'枕の上でバランス', emoji:'🛏', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'枕', place:'室内',
+        approach:'不安定面バランス', approachDesc:'柔らかい不安定な面でのバランスで感覚入力が増えます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'不安定面での適応力',
+        effect2:'💪', e2name:'体幹強化', e2desc:'バランスをとるため体幹が働く',
+        steps:['枕を床に置く','枕の上に両足で乗る','バランスをとって10秒立つ','慣れたら片足立ちに挑戦'],
+        tip:'最初は大人が手を握ってあげましょう。柔らかい床感覚が楽しいです。',
+        arrange:'目を閉じてバランスに挑戦してみよう！' },
+      { name:'タオル丸めて片足立ち', emoji:'🧺', mode:'👤 ひとり', time:'2〜3分', diff:'★☆☆', age:'4歳〜', tool:'タオル', place:'室内',
+        approach:'バランス・集中', approachDesc:'不安定な面での片足立ちで前庭感覚と体幹が鍛えられます',
+        effect1:'⚖️', e1name:'バランス向上', e1desc:'感覚入力が増える',
+        effect2:'🎯', e2name:'集中力', e2desc:'バランス維持に集中できる',
+        steps:['タオルを丸めて円筒形にする','丸めたタオルの上に片足で乗る','10秒バランスをとる','反対の足に変えて行う'],
+        tip:'最初は壁に手をつけながら行いましょう。',
+        arrange:'目を閉じると難易度がぐっと上がります！' },
+    ]
+  },
+  focus: { name:'集中力が続かない', emoji:'🎯', gradient:'linear-gradient(135deg,#74B9FF,#4FACFE)',
+    exercises:[
+      { name:'風船キープ', emoji:'🎈', mode:'👤👫 どちらも', time:'5分', diff:'★☆☆', age:'3歳〜', tool:'風船', place:'室内',
+        approach:'集中・目と手の協調', approachDesc:'落とさないよう目で追い続けることで集中力と協調性が育まれます',
+        effect1:'🎯', e1name:'集中力向上', e1desc:'風船を目で追い続ける',
+        effect2:'🤝', e2name:'協調性', e2desc:'手と目の連携が強化',
+        steps:['風船を膨らませる','風船を空中に投げる','手で打ち続けて落とさないようにする','何回続けられるか数える'],
+        tip:'「何回続けられるか記録に挑戦！」とゲームにすると集中して取り組みます。',
+        arrange:'足でも打っていいルールにすると体全体を使えます！' },
+      { name:'豆つかみリレー', emoji:'🫘', mode:'👤 ひとり', time:'5〜10分', diff:'★★☆', age:'4歳〜', tool:'小豆・皿', place:'室内',
+        approach:'集中・指先の精度', approachDesc:'細かいものをつまむ作業で指先の集中力と巧緻性が高まります',
+        effect1:'🎯', e1name:'集中力向上', e1desc:'細かい作業で集中を持続',
+        effect2:'✋', e2name:'指先の精度', e2desc:'つまむ動作が上手になる',
+        steps:['小豆を皿に盛る','別の皿に指（または箸）で一粒ずつ移す','全部移したらまた戻す','タイムを計って記録挑戦'],
+        tip:'「何秒でできるかな？」とタイム計測するとやる気アップ！',
+        arrange:'豆の種類を変えたり、箸から指へ変えて難易度調整しよう。' },
+      { name:'足でジャンケン', emoji:'👣', mode:'👤👫 どちらも', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'集中・判断力', approachDesc:'瞬時に判断して体を動かすことで集中力と反応力が鍛えられます',
+        effect1:'🎯', e1name:'集中力', e1desc:'次の動きを瞬時に判断',
+        effect2:'⚡', e2name:'反応力', e2desc:'素早く動く力がつく',
+        steps:['向かい合って立つ','「最初はグー！ジャンケン！」で足でジャンケン','グー＝両足閉じる、チョキ＝片足前、パー＝両足開く','3回勝負して交代'],
+        tip:'足ジャンケンは頭と体両方使うので疲れます。適度に休憩を。',
+        arrange:'3回戦を5セットやると良い運動になります！' },
+      { name:'キャンドル呼吸カウント', emoji:'🕯️', mode:'👤 ひとり', time:'3分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'集中・呼吸調整', approachDesc:'ゆっくり息を吐くことで自律神経が整い集中力が高まります',
+        effect1:'🎯', e1name:'集中力', e1desc:'呼吸に集中することで心が落ち着く',
+        effect2:'😌', e2name:'リラックス', e2desc:'自律神経が整う',
+        steps:['指を1本立てて「ロウソク」にする','鼻から息を吸う','ろうそくをゆっくり吹き消すイメージで口から吐く','5〜10回繰り返す'],
+        tip:'「ろうそくの火をゆーっくり消してね」と声がけすると上手にできます。',
+        arrange:'指の本数を増やして「何本消せるかな？」とゲームにしよう！' },
+      { name:'バランスボールでキャッチ', emoji:'🟡', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'4歳〜', tool:'ボール', place:'室内',
+        approach:'集中・目の追跡', approachDesc:'ボールを目で追うことで集中力と目の追跡能力が向上します',
+        effect1:'🎯', e1name:'集中力', e1desc:'ボールを目で追い続ける',
+        effect2:'👁️', e2name:'目の協調', e2desc:'眼球運動が鍛えられる',
+        steps:['向かい合って座る','ゆっくりボールを転がして渡す','受け取ったらまた転がす','テンポを上げていく'],
+        tip:'「次来るよ〜」と声をかけてから転がすと準備できます。',
+        arrange:'立った状態で投げてキャッチに挑戦してみよう！' },
+      { name:'まねっこ体操', emoji:'🤸', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'集中・模倣', approachDesc:'相手をよく観察してまねることで集中力と模倣能力が育まれます',
+        effect1:'🎯', e1name:'集中力', e1desc:'相手の動きを観察し続ける',
+        effect2:'🧠', e2name:'模倣能力', e2desc:'見て学ぶ力がつく',
+        steps:['向かい合って立つ','一人が好きなポーズや動きをする','もう一人がまねをする','5回やったら交代'],
+        tip:'最初は簡単な動き（手を上げるなど）から始めましょう。',
+        arrange:'音楽に合わせて動くとリズム感も育まれます！' },
+      { name:'手拍子リズム遊び', emoji:'👏', mode:'👤👫 どちらも', time:'5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'集中・聴覚処理', approachDesc:'リズムを聞いてまねることで聴覚処理能力と集中力が鍛えられます',
+        effect1:'🎯', e1name:'集中力', e1desc:'音に集中し続ける力',
+        effect2:'🎵', e2name:'リズム感', e2desc:'音楽的な感覚が育まれる',
+        steps:['簡単なリズムを手拍子で叩く（タン・タン・タン）','子どもが同じリズムで返す','少し複雑なリズムに変えていく','慣れたら交代して出題者を変える'],
+        tip:'最初は2〜3回の短いリズムから始めましょう。',
+        arrange:'足踏みも組み合わせると全身運動になります！' },
+      { name:'ろうそく呼吸', emoji:'💨', mode:'👤 ひとり', time:'3分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'集中・呼吸', approachDesc:'ゆっくり長く吐くことで副交感神経が働き集中力が高まります',
+        effect1:'😌', e1name:'リラックス', e1desc:'自律神経が整う',
+        effect2:'🎯', e2name:'集中力', e2desc:'呼吸に集中する力',
+        steps:['鼻からゆっくり息を吸う（4秒）','口をすぼめてゆーっくり吐く（8秒）','ろうそくの火が揺れるイメージ','5〜10回繰り返す'],
+        tip:'「ろうそくを消さないようにそーっと吹こう」と声がけしましょう。',
+        arrange:'吹く時間を10秒、15秒と伸ばしていきましょう！' },
+      { name:'風船を頭で当てる', emoji:'🎈', mode:'👤👫 どちらも', time:'5分', diff:'★☆☆', age:'4歳〜', tool:'風船', place:'室内',
+        approach:'集中・目の追跡', approachDesc:'動く風船を目で追い頭で当てることで全身の協調性と集中力が高まります',
+        effect1:'🎯', e1name:'集中力', e1desc:'動くものを目で追い続ける',
+        effect2:'🤸', e2name:'協調性', e2desc:'目・頭・体の連携',
+        steps:['風船を空中に投げる','落とさないよう頭で打ち続ける','何回続けられるか数える','記録更新に挑戦'],
+        tip:'最初は手で補助しながらやってみましょう。',
+        arrange:'頭と手を交互に使うルールにすると難易度アップ！' },
+      { name:'紙風船バレー', emoji:'📰', mode:'👫 ペア', time:'5分', diff:'★☆☆', age:'3歳〜', tool:'新聞紙', place:'室内',
+        approach:'集中・協調', approachDesc:'軽い紙風船を落とさないよう打ち合うことで集中力と協調性が高まります',
+        effect1:'🎯', e1name:'集中力', e1desc:'ゆっくり動く物を追いかける',
+        effect2:'🤝', e2name:'協調性', e2desc:'相手に合わせて動く力',
+        steps:['新聞紙を丸めて紙ボールを作る','向かい合って手で打ち合う','地面に落とさないよう続ける','何往復続けられるか挑戦'],
+        tip:'「10回続けたら大成功！」と目標を作るとやる気が出ます。',
+        arrange:'風船の代わりに本物の風船を使っても楽しい！' },
+    ]
+  },
+  finemotor: { name:'手先が不器用', emoji:'✋', gradient:'linear-gradient(135deg,#A29BFE,#6C5CE7)',
+    exercises:[
+      { name:'洗濯バサミつけ外し', emoji:'🧺', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'洗濯バサミ', place:'室内',
+        approach:'指先の力・巧緻性', approachDesc:'つまむ動作で指先の力と巧緻性が鍛えられます',
+        effect1:'✋', e1name:'指先強化', e1desc:'つまむ力がつく',
+        effect2:'🧠', e2name:'巧緻性向上', e2desc:'細かい動作が上手になる',
+        steps:['段ボールや紙の端に洗濯バサミをつける','全部つけたら全部外す','どれだけ早くできるか挑戦','色分けして種類別にも挑戦'],
+        tip:'最初は力の弱い洗濯バサミから始めましょう。',
+        arrange:'紐に洗濯バサミを並べてみよう！' },
+      { name:'スポンジ絞り', emoji:'🧽', mode:'👤 ひとり', time:'5分', diff:'★☆☆', age:'3歳〜', tool:'スポンジ・水', place:'室内',
+        approach:'握力・固有感覚', approachDesc:'強く握ることで手の握力と固有感覚が強化されます',
+        effect1:'💪', e1name:'握力向上', e1desc:'手の力が強くなる',
+        effect2:'😌', e2name:'落ち着き', e2desc:'固有感覚の入力で安定',
+        steps:['スポンジを水に浸す','洗面器の上でぎゅっと絞る','水がなくなったらまた浸す','10回繰り返す'],
+        tip:'「ぜんぶ絞り出せるかな？」と声がけすると一生懸命やります。',
+        arrange:'スポンジのサイズを変えて難易度を調整しよう！' },
+      { name:'新聞紙ちぎり', emoji:'📰', mode:'👤 ひとり', time:'5分', diff:'★☆☆', age:'2歳〜', tool:'新聞紙', place:'室内',
+        approach:'指先・両手協調', approachDesc:'両手で紙をちぎる動作で指先と両手の協調性が鍛えられます',
+        effect1:'✋', e1name:'指先強化', e1desc:'ちぎる力がつく',
+        effect2:'😌', e2name:'解放感', e2desc:'思い切り破ることで発散',
+        steps:['新聞紙を手に持つ','細く長くちぎる','細かくちぎる','最後は丸めてボールにする'],
+        tip:'「思い切りちぎっていいよ！」と声がけすると大喜びします。',
+        arrange:'ちぎった後に紙吹雪にして遊ぼう！' },
+      { name:'豆つまみ', emoji:'🥢', mode:'👤 ひとり', time:'5〜10分', diff:'★★☆', age:'4歳〜', tool:'小豆・箸', place:'室内',
+        approach:'指先の精度', approachDesc:'細かいものをつまむ動作で指先の精度と集中力が高まります',
+        effect1:'✋', e1name:'指先精度', e1desc:'細かい動作が上手になる',
+        effect2:'🎯', e2name:'集中力', e2desc:'集中して作業する力',
+        steps:['小豆を皿に盛る','箸や指で一粒ずつ別の皿に移す','全部移したら完成','タイムを記録して挑戦'],
+        tip:'最初は指から始めて、慣れたら箸に挑戦しましょう。',
+        arrange:'目標時間を決めてタイムアタックしよう！' },
+      { name:'テープはがし', emoji:'🖊️', mode:'👤 ひとり', time:'5分', diff:'★☆☆', age:'2歳〜', tool:'マスキングテープ', place:'室内',
+        approach:'指先強化', approachDesc:'テープをはがす動作で指先の力と巧緻性が鍛えられます',
+        effect1:'✋', e1name:'指先強化', e1desc:'爪先を使う力がつく',
+        effect2:'🎯', e2name:'集中力', e2desc:'はがすことに集中できる',
+        steps:['壁や床にマスキングテープを貼る','端を爪で見つけてはがす','きれいにはがせたら成功','繰り返して遊ぶ'],
+        tip:'テープの端を少し折り返しておくと始めやすいです。',
+        arrange:'カラフルなテープで模様を作ってからはがそう！' },
+      { name:'ひも通し', emoji:'🪡', mode:'👤 ひとり', time:'5〜10分', diff:'★★☆', age:'4歳〜', tool:'ひも・段ボール', place:'室内',
+        approach:'両手協調・集中', approachDesc:'両手を使ってひもを通す動作で協調性と集中力が鍛えられます',
+        effect1:'🤝', e1name:'両手協調', e1desc:'両手を同時に使う力',
+        effect2:'🎯', e2name:'集中力', e2desc:'細かい作業に集中できる',
+        steps:['段ボールに穴を開ける','ひもの先を固める（テープなど）','穴にひもを通す','パターンを変えて模様を作る'],
+        tip:'最初は穴を大きめにするとやりやすいです。',
+        arrange:'ビーズを使ってアクセサリー作りに発展させよう！' },
+      { name:'スポンジでスタンプ', emoji:'🎨', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'スポンジ', place:'室内',
+        approach:'指先・力加減', approachDesc:'スポンジを押す力加減を調整することで指先の力加減を学びます',
+        effect1:'✋', e1name:'力加減', e1desc:'押す力を調整する感覚',
+        effect2:'🎨', e2name:'創造性', e2desc:'楽しく表現できる',
+        steps:['スポンジを好きな形に切る','絵の具や色水につける','紙に押してスタンプする','力加減を変えてみる'],
+        tip:'水で薄めた絵の具だと洗いやすいです。汚れてもいい服で！',
+        arrange:'スポンジの形を変えてオリジナル作品を作ろう！' },
+      { name:'輪ゴムの引っ張り', emoji:'🔵', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'輪ゴム', place:'室内',
+        approach:'指先の力', approachDesc:'輪ゴムを引っ張ることで指先と手の固有感覚が強化されます',
+        effect1:'✋', e1name:'指先強化', e1desc:'引っ張る力がつく',
+        effect2:'😌', e2name:'集中', e2desc:'感覚に集中できる',
+        steps:['輪ゴムを指にかける','両手の指で引っ張って広げる','10秒キープして離す','いろいろな指の組み合わせで行う'],
+        tip:'輪ゴムが外れて飛ぶことがあるので周囲に気をつけましょう。',
+        arrange:'太めの輪ゴムに変えると負荷が上がります！' },
+      { name:'ペットボトルキャップ開け閉め', emoji:'🍶', mode:'👤 ひとり', time:'5分', diff:'★☆☆', age:'4歳〜', tool:'ペットボトル', place:'室内',
+        approach:'手首・指先', approachDesc:'キャップを回す動作で手首と指先の協調性が鍛えられます',
+        effect1:'✋', e1name:'手首強化', e1desc:'ひねる動作が上手になる',
+        effect2:'🧠', e2name:'巧緻性', e2desc:'細かい操作が上手になる',
+        steps:['ペットボトルを数本用意する','全部のキャップを開ける','全部のキャップを閉める','どれだけ早くできるか挑戦'],
+        tip:'「全部開けて全部閉めて！急げ急げ！」とゲームにしましょう。',
+        arrange:'目を閉じて触覚だけでやってみよう！' },
+      { name:'紐結び練習', emoji:'🪢', mode:'👤 ひとり', time:'5〜10分', diff:'★★★', age:'5歳〜', tool:'紐', place:'室内',
+        approach:'両手協調・巧緻性', approachDesc:'紐を結ぶ動作で両手の協調性と集中力が高度に鍛えられます',
+        effect1:'🤝', e1name:'両手協調', e1desc:'両手を複雑に使う力',
+        effect2:'🧠', e2name:'問題解決力', e2desc:'手順を考えながら動く',
+        steps:['太めの紐を用意する','まずは「縦結び」から練習','次に「蝶々結び」に挑戦','何度も繰り返す'],
+        tip:'最初は大人が手を添えて一緒にやりましょう。急がず丁寧に。',
+        arrange:'靴ひもで練習すると実生活に直結して達成感大！' },
+    ]
+  },
+  sensory: { name:'感覚過敏・感覚鈍麻', emoji:'👐', gradient:'linear-gradient(135deg,#55EFC4,#00B894)',
+    exercises:[
+      { name:'足裏ころころ', emoji:'🦶', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'2歳〜', tool:'ペットボトル', place:'室内',
+        approach:'触覚の調整', approachDesc:'足裏への刺激で触覚の感覚調整が促されます',
+        effect1:'🦶', e1name:'足裏感覚', e1desc:'触覚の感受性を整える',
+        effect2:'😌', e2name:'リラックス', e2desc:'足裏マッサージ効果',
+        steps:['ペットボトルを床に置く','椅子に座り足裏でコロコロ転がす','足の指・かかと・土踏まずまんべんなく','1〜2分ずつ行う'],
+        tip:'冷たいペットボトルを使うとより刺激的です。感覚過敏の子は温水から始めよう。',
+        arrange:'テニスボールを使うとより深く刺激できます！' },
+      { name:'砂・豆の手遊び', emoji:'🫘', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'小豆・砂', place:'室内',
+        approach:'触覚の調整', approachDesc:'様々な素材に触れることで触覚の過敏や鈍麻を整えます',
+        effect1:'✋', e1name:'触覚調整', e1desc:'触れる感覚に慣れていく',
+        effect2:'😌', e2name:'落ち着き', e2desc:'感覚遊びでリラックス',
+        steps:['洗面器に小豆や砂を入れる','手を埋めたり掘り起こしたりする','指の間から流す','感覚を楽しむ'],
+        tip:'嫌がる場合は無理強いせず、まず見るだけから始めましょう。',
+        arrange:'温かいお湯に入れた米粒でも楽しめます！' },
+      { name:'新聞紙ぐしゃぐしゃ', emoji:'📰', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'2歳〜', tool:'新聞紙', place:'室内',
+        approach:'触覚・解放感', approachDesc:'思い切り握ってぐしゃぐしゃにすることで触覚刺激と解放感が得られます',
+        effect1:'✋', e1name:'触覚入力', e1desc:'手全体への触覚刺激',
+        effect2:'😌', e2name:'解放感', e2desc:'思い切りやることで発散',
+        steps:['新聞紙を手に持つ','思い切りぐしゃぐしゃに丸める','広げてまたぐしゃぐしゃに','最後は丸めてボールにする'],
+        tip:'「どんな音がする？」と音に注目させると感覚が広がります。',
+        arrange:'丸めたボールでキャッチボールをしよう！' },
+      { name:'背中トントン', emoji:'👋', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'2歳〜', tool:'なし', place:'室内',
+        approach:'触覚・落ち着き', approachDesc:'背中をリズムよく叩くことで触覚が刺激され落ち着きをもたらします',
+        effect1:'😌', e1name:'落ち着き', e1desc:'リズムある刺激で鎮静',
+        effect2:'❤️', e2name:'安心感', e2desc:'触れられる安心感',
+        steps:['子どもの背中側に座る','手のひらでリズムよく軽く叩く','「とんとん♪」と声に出しながら行う','1〜2分続ける'],
+        tip:'強さは子どもの反応を見ながら調整。「もっとやって」なら続けましょう。',
+        arrange:'背中に「文字や絵」を描いてあてっこゲームに発展しよう！' },
+      { name:'霧吹き遊び', emoji:'💧', mode:'👤👫 どちらも', time:'5分', diff:'★☆☆', age:'2歳〜', tool:'霧吹き・水', place:'室内・外',
+        approach:'触覚の慣れ', approachDesc:'水のミストに少しずつ慣れることで触覚過敏の調整ができます',
+        effect1:'✋', e1name:'触覚の慣れ', e1desc:'水の感触に少しずつ慣れる',
+        effect2:'😌', e2name:'涼感・リラックス', e2desc:'気持ちよい感覚体験',
+        steps:['霧吹きに水を入れる','まず手や腕に少し吹きかける','慣れたら足や首元にも','「気持ちいい〜」と楽しい雰囲気で'],
+        tip:'最初は遠くから少量ずつ。嫌がったらすぐやめて別の方法を試しましょう。',
+        arrange:'暖かいミストと冷たいミストを比べてみよう！' },
+      { name:'タオルでこすりこすり', emoji:'🧺', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'2歳〜', tool:'タオル', place:'室内',
+        approach:'触覚覚醒', approachDesc:'タオルでこすることで触覚が活性化し感覚の鈍麻を改善します',
+        effect1:'✋', e1name:'触覚覚醒', e1desc:'触覚センサーを活性化',
+        effect2:'😌', e2name:'体の意識', e2desc:'体のどこを触られているか分かる',
+        steps:['乾いたタオルを用意する','腕や足をこすりこすりする','「ここはどこ？」と体部位を確認','背中や首元もこする'],
+        tip:'入浴後に行うと肌が温まっており効果的です。',
+        arrange:'タオルを濡らして行うとまた違う感覚が楽しめます！' },
+      { name:'氷を手に乗せる', emoji:'🧊', mode:'👤 ひとり', time:'1〜2分', diff:'★☆☆', age:'3歳〜', tool:'氷', place:'室内',
+        approach:'触覚の調整', approachDesc:'冷たい刺激で触覚の感受性を調整します',
+        effect1:'✋', e1name:'触覚調整', e1desc:'温度感覚を調整する',
+        effect2:'🧠', e2name:'感覚認識', e2desc:'感覚に気づく力が育まれる',
+        steps:['小さめの氷を一つ用意する','手のひらに乗せる','「冷たい！」と感じながら5秒キープ','溶けてきたら新しい氷に交換'],
+        tip:'最初は短時間から始め、少しずつ時間を伸ばしましょう。',
+        arrange:'氷と温かいタオルを交互に当てて感覚の違いを楽しもう！' },
+      { name:'泡立て遊び', emoji:'🫧', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'石鹸・水', place:'室内',
+        approach:'触覚の慣れ', approachDesc:'泡の感触に触れることで触覚の慣れと遊びの楽しさを体験できます',
+        effect1:'✋', e1name:'触覚の慣れ', e1desc:'違う質感に慣れていく',
+        effect2:'😌', e2name:'楽しさ・リラックス', e2desc:'感覚遊びで気持ちが和む',
+        steps:['洗面器に水と石鹸を入れる','手で泡立てる','泡の中に手を入れる','泡を持ち上げてみる'],
+        tip:'石鹸は子ども用の優しいものを使いましょう。目に入らないよう注意。',
+        arrange:'色付き石鹸液で泡を作るとカラフルで楽しい！' },
+      { name:'足裏スタンプ', emoji:'👣', mode:'👤👫 どちらも', time:'10分', diff:'★☆☆', age:'2歳〜', tool:'絵の具・紙', place:'室内',
+        approach:'足裏感覚', approachDesc:'絵の具の感触を足裏で体験し触覚の慣れと感覚発達を促します',
+        effect1:'🦶', e1name:'足裏感覚', e1desc:'足裏の触覚を豊かにする',
+        effect2:'🎨', e2name:'楽しさ', e2desc:'感覚を通じた表現活動',
+        steps:['大きな紙を床に広げる','子ども用絵の具を薄く伸ばす','足に塗って紙の上を歩く','足型を残す'],
+        tip:'汚れてもいい服で。終わったらすぐ足を洗いましょう。',
+        arrange:'手型も一緒に作ってアート作品にしよう！' },
+      { name:'綿をほぐす', emoji:'🌸', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'綿', place:'室内',
+        approach:'触覚・リラックス', approachDesc:'綿の柔らかい感触に触れることでリラックス効果と触覚の調整ができます',
+        effect1:'😌', e1name:'リラックス', e1desc:'柔らかい感触で気持ちが和む',
+        effect2:'✋', e2name:'触覚調整', e2desc:'優しい感触に慣れていく',
+        steps:['綿を手に取る','指でほぐしながら広げる','引っ張って細長くする','丸めてまた広げる'],
+        tip:'「雲みたいだね」「羊の毛みたいだね」と声がけして想像を膨らませましょう。',
+        arrange:'ほぐした綿で雪だるまを作ってみよう！' },
+    ]
+  },
+  stamina: { name:'体力・持久力が弱い', emoji:'💪', gradient:'linear-gradient(135deg,#FDCB6E,#E17055)',
+    exercises:[
+      { name:'その場行進', emoji:'🚶', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'持久力・体幹', approachDesc:'膝を高く上げて行進することで持久力と体幹が鍛えられます',
+        effect1:'💪', e1name:'持久力向上', e1desc:'有酸素運動の基礎',
+        effect2:'🧍', e2name:'体幹強化', e2desc:'姿勢保持の力がつく',
+        steps:['背筋を伸ばして立つ','膝を高く上げながらその場で行進する','腕も大きく振る','1〜2分続ける'],
+        tip:'「元気よく！膝を高く！」と声がけすると正しい動作になります。',
+        arrange:'音楽に合わせてテンポを変えてみよう！' },
+      { name:'スローバーピー', emoji:'🏋️', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'全身持久力', approachDesc:'ゆっくりのバーピーで全身の持久力と体幹が鍛えられます',
+        effect1:'💪', e1name:'全身持久力', e1desc:'体全体を使った有酸素運動',
+        effect2:'🧠', e2name:'体幹強化', e2desc:'全身の連動性向上',
+        steps:['立った状態からゆっくりしゃがむ','手を床につける','足を後ろに伸ばしてプランク','ゆっくり戻って立ち上がる'],
+        tip:'「ゆっくりやるのがポイント！」急がずに正確に行いましょう。',
+        arrange:'慣れてきたら少しスピードを上げてみよう！' },
+      { name:'壁よりかかりスクワット', emoji:'🧱', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'脚力・持久力', approachDesc:'壁に背をつけたスクワットで安全に脚力と持久力が鍛えられます',
+        effect1:'💪', e1name:'脚力向上', e1desc:'足腰が強くなる',
+        effect2:'⏱', e2name:'持久力', e2desc:'同じ動作を続ける力',
+        steps:['壁に背中をつける','足を少し前に出す','ゆっくりと膝を曲げて下ろす','膝が90度になったら止めて戻す'],
+        tip:'「壁から离れないようにね」と声がけして正しいフォームを維持しましょう。',
+        arrange:'10秒キープから始めて少しずつ長くしよう！' },
+      { name:'階段上り下り', emoji:'🪜', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'階段', place:'室内',
+        approach:'有酸素・脚力', approachDesc:'階段の上り下りで心肺機能と脚力が自然に鍛えられます',
+        effect1:'💪', e1name:'脚力向上', e1desc:'階段で自然に筋力がつく',
+        effect2:'❤️', e2name:'心肺機能', e2desc:'有酸素運動で体力向上',
+        steps:['手すりを持ちながら安全に行う','ゆっくりとしたペースで上り下り','3〜5往復から始める','慣れたら往復数を増やす'],
+        tip:'安全第一！手すりを必ず使いましょう。',
+        arrange:'リズムに合わせて上り下りすると楽しい！' },
+      { name:'風船ふくらまし', emoji:'🎈', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'風船', place:'室内',
+        approach:'肺活量・呼吸筋', approachDesc:'息を吐き続けることで肺活量と呼吸に使う筋肉が鍛えられます',
+        effect1:'💨', e1name:'肺活量向上', e1desc:'深く息を吐く力がつく',
+        effect2:'💪', e2name:'呼吸筋強化', e2desc:'呼吸が楽になる',
+        steps:['風船の口を口にあてる','大きく息を吸う','一気に息を吐いてふくらませる','何回かに分けてもOK'],
+        tip:'最初は小さな風船から始めましょう。力みすぎに注意！',
+        arrange:'どれだけ大きくふくらませられるか挑戦しよう！' },
+      { name:'タオルジャンプ', emoji:'🧺', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'タオル', place:'室内',
+        approach:'脚力・リズム', approachDesc:'タオルを飛び越えるジャンプで脚力とリズム感が鍛えられます',
+        effect1:'💪', e1name:'脚力向上', e1desc:'跳ぶ力がつく',
+        effect2:'🎵', e2name:'リズム感', e2desc:'リズムよく動く力',
+        steps:['タオルを床に一直線に広げる','両足でタオルを飛び越える','振り返って反対側に飛び越える','10〜20往復繰り返す'],
+        tip:'「タオルを踏まないようにね！」とゲーム感覚で行いましょう。',
+        arrange:'タオルを丸めて高さを出すと難易度アップ！' },
+      { name:'音楽に合わせて踊る', emoji:'🎵', mode:'👤👫 どちらも', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'なし', place:'室内',
+        approach:'持久力・楽しさ', approachDesc:'楽しみながら動くことで持久力と体全体の協調性が育まれます',
+        effect1:'💪', e1name:'持久力向上', e1desc:'楽しく有酸素運動ができる',
+        effect2:'😊', e2name:'楽しさ・解放感', e2desc:'音楽で気持ちが開放される',
+        steps:['好きな音楽をかける','音楽に合わせて自由に体を動かす','止まれ！のサインで動きを止める','曲に合わせてテンポを変える'],
+        tip:'子どもの好きな曲をかけると自然と体が動きます。',
+        arrange:'「止まれ！」ゲームを組み合わせると更に楽しい！' },
+      { name:'カエルジャンプ', emoji:'🐸', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'脚力・全身運動', approachDesc:'深くしゃがんでジャンプする動作で脚力と全身の連動性が鍛えられます',
+        effect1:'💪', e1name:'脚力向上', e1desc:'ジャンプ力がつく',
+        effect2:'🧠', e2name:'全身連動', e2desc:'体全体をまとめて使う力',
+        steps:['足を肩幅より広く開く','深くしゃがんで手を床につける','「ぴょーん！」と声を出しながら前方にジャンプ','5〜10回繰り返す'],
+        tip:'「カエルさんになりきって！」と声がけすると楽しくできます。',
+        arrange:'遠くに跳べるか距離を競おう！' },
+      { name:'親子でスクワット', emoji:'👨‍👧', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'脚力・持久力', approachDesc:'一緒に行うことで楽しく脚力と持久力が鍛えられます',
+        effect1:'💪', e1name:'脚力向上', e1desc:'足腰が丈夫になる',
+        effect2:'❤️', e2name:'親子の絆', e2desc:'一緒に頑張ることで絆が深まる',
+        steps:['向かい合って手をつなぐ','「いち・に・いち・に」とかけ声をかけながら一緒にしゃがんで立つ','10回を1セットとする','休憩しながら3セット行う'],
+        tip:'手をつなぐことで子どもが安定してスクワットできます。',
+        arrange:'スクワットの途中で「ジャンプ！」を入れてみよう！' },
+      { name:'1分間ステップ', emoji:'⏱', mode:'👤 ひとり', time:'1〜3分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'有酸素・持久力', approachDesc:'短い時間で一生懸命動くことで有酸素能力と持久力が高まります',
+        effect1:'💪', e1name:'持久力向上', e1desc:'短時間で体力をつける',
+        effect2:'⚡', e2name:'心肺機能', e2desc:'心臓と肺が鍛えられる',
+        steps:['タイマーを1分にセット','その場で足踏みをする','腕も大きく振る','タイムが来るまで続ける'],
+        tip:'「1分間止まらずできるかな？」と声がけすると頑張れます。',
+        arrange:'タイムを伸ばして2分、3分に挑戦しよう！' },
+    ]
+  },
+  sound: { name:'音・光に敏感', emoji:'👂', gradient:'linear-gradient(135deg,#FF7675,#D63031)',
+    exercises:[
+      { name:'耳ふさぎ深呼吸', emoji:'🙉', mode:'👤 ひとり', time:'2〜3分', diff:'★☆☆', age:'2歳〜', tool:'なし', place:'室内',
+        approach:'聴覚過敏・落ち着き', approachDesc:'耳をふさいで呼吸に集中することで聴覚過敏の刺激を減らし落ち着きをもたらします',
+        effect1:'👂', e1name:'聴覚保護', e1desc:'音の刺激を一時的に遮断',
+        effect2:'😌', e2name:'落ち着き', e2desc:'呼吸に集中して気持ちが整う',
+        steps:['静かな場所に座る','両手のひらで耳をふさぐ','目を閉じてゆっくり深呼吸する','「海の音が聞こえる？」と声がけ'],
+        tip:'音が多い場所で子どもがパニックになりそうなときに有効です。',
+        arrange:'「どんな音が聞こえる？」と自分の体音に気づかせよう。' },
+      { name:'低い声でハミング', emoji:'🎵', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'聴覚統合・振動覚', approachDesc:'低い声でハミングすることで骨伝導の振動が聴覚システムを整えます',
+        effect1:'🎵', e1name:'聴覚統合', e1desc:'内側からの振動で感覚を整える',
+        effect2:'😌', e2name:'落ち着き', e2desc:'ハミングで自律神経が整う',
+        steps:['口を閉じて低い声で「んーーー」とハミングする','胸や頭に振動を感じる','5〜10秒続けて息を吸う','3〜5回繰り返す'],
+        tip:'好きな曲の一節をハミングするとより楽しめます。',
+        arrange:'手を胸に当てて振動を感じながらやってみよう！' },
+      { name:'暗い部屋でくるまる', emoji:'🌙', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'2歳〜', tool:'毛布', place:'室内',
+        approach:'視覚・触覚・鎮静', approachDesc:'暗い場所で毛布にくるまることで視覚・触覚への刺激を減らし鎮静効果が得られます',
+        effect1:'🌙', e1name:'刺激の遮断', e1desc:'視覚・聴覚の刺激を減らす',
+        effect2:'😌', e2name:'深いリラックス', e2desc:'感覚が整い落ち着ける',
+        steps:['薄暗い静かな部屋を用意する','毛布を床に広げる','子どもが自分からくるまる','好きなだけそのままでいる'],
+        tip:'子どもが自分で入る選択をすることが大切。強制しないようにしましょう。',
+        arrange:'テントを作って「秘密基地」にすると入りやすくなります！' },
+      { name:'ゆっくり深呼吸', emoji:'💨', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'自律神経・落ち着き', approachDesc:'ゆっくりした呼吸で副交感神経が優位になり過敏反応が和らぎます',
+        effect1:'😌', e1name:'自律神経調整', e1desc:'副交感神経を活性化',
+        effect2:'🧘', e2name:'落ち着き', e2desc:'過敏反応が和らぐ',
+        steps:['鼻から4秒かけて息を吸う','2秒息を止める','口から8秒かけてゆっくり吐く','5〜10回繰り返す'],
+        tip:'「お腹をふくらませて吸う、へこませて吐く」と声がけしましょう。',
+        arrange:'お気に入りのぬいぐるみをお腹に乗せてゆらゆらさせよう！' },
+      { name:'テント遊び', emoji:'⛺', mode:'👤 ひとり', time:'10〜15分', diff:'★☆☆', age:'2歳〜', tool:'毛布・椅子', place:'室内',
+        approach:'感覚の遮断・安心感', approachDesc:'テントの中という囲まれた空間が感覚への刺激を減らし安心感をもたらします',
+        effect1:'😌', e1name:'安心感', e1desc:'囲まれた空間で落ち着ける',
+        effect2:'🌙', e2name:'感覚遮断', e2desc:'過剰な刺激から守られる',
+        steps:['椅子2〜3脚を並べる','毛布をかぶせてテントを作る','中にクッションを敷く','子どもが好きなだけ過ごす'],
+        tip:'テント内にお気に入りのおもちゃや本を入れると自分から入ります。',
+        arrange:'懐中電灯を入れて「探検ごっこ」にしても楽しい！' },
+      { name:'手でグーパー体操', emoji:'✊', mode:'👤 ひとり', time:'2〜3分', diff:'★☆☆', age:'2歳〜', tool:'なし', place:'室内',
+        approach:'覚醒調整・集中', approachDesc:'手のグーパーで血流が促され覚醒水準が適切に調整されます',
+        effect1:'⚡', e1name:'覚醒調整', e1desc:'ボーっとしているとき活性化',
+        effect2:'🎯', e2name:'集中力', e2desc:'手の動きで意識が向く',
+        steps:['両手をグーに握る','パッと開く','ゆっくり・速く・リズムよく繰り返す','10〜20回行う'],
+        tip:'「グー！パー！グー！パー！」と掛け声をかけながら行いましょう。',
+        arrange:'グーパーをリズムに合わせて交互にやってみよう！' },
+      { name:'重いもの抱えて歩く', emoji:'📦', mode:'👤 ひとり', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'本・クッション', place:'室内',
+        approach:'固有感覚・鎮静', approachDesc:'重いものを持つことで固有感覚への深い入力が感覚過敏を落ち着かせます',
+        effect1:'😌', e1name:'鎮静効果', e1desc:'固有感覚で過敏を和らげる',
+        effect2:'💪', e2name:'体幹強化', e2desc:'重みを支える体幹が鍛えられる',
+        steps:['本やクッションを胸に抱える','背筋を伸ばしてゆっくり歩く','部屋の端まで歩いて折り返す','3〜5往復する'],
+        tip:'重すぎない荷物から始めて、子どもが心地よいと感じる重さを探しましょう。',
+        arrange:'リュックに重しを入れて背負って歩くのも効果的！' },
+      { name:'目を閉じて音あて', emoji:'👂', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'聴覚慣れ・集中', approachDesc:'音に意識的に集中することで聴覚処理能力が高まり過敏が和らぎます',
+        effect1:'👂', e1name:'聴覚慣れ', e1desc:'音に意識的に向き合う力',
+        effect2:'🎯', e2name:'集中力', e2desc:'一つの感覚に集中する',
+        steps:['目を閉じて座る','大人がいろいろな音を出す（手拍子・コップを叩くなど）','子どもが音をあてる','正解したら交代'],
+        tip:'最初は生活音など知っている音から始めましょう。',
+        arrange:'音の種類を増やして「音クイズ大会」にしよう！' },
+      { name:'小さな音を聞く瞑想', emoji:'🔇', mode:'👤 ひとり', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'聴覚慣れ・集中', approachDesc:'小さな音に耳を澄ますことで聴覚の過敏さが逆に穏やかになります',
+        effect1:'🧘', e1name:'聴覚調整', e1desc:'音への反応が穏やかになる',
+        effect2:'😌', e2name:'落ち着き', e2desc:'集中することで気持ちが整う',
+        steps:['静かな部屋に座る','目を閉じる','「どんな小さな音が聞こえる？」と声がけ','聞こえた音を教えてもらう'],
+        tip:'冷蔵庫の音、風の音など普段気づかない音に気づかせましょう。',
+        arrange:'外に出て自然の音を聞く「音探し散歩」にしよう！' },
+      { name:'ゆっくりストレッチ＆深呼吸', emoji:'🧘', mode:'👤 ひとり', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'自律神経・鎮静', approachDesc:'ゆっくりした動きと呼吸で全身の緊張がほぐれ感覚過敏が和らぎます',
+        effect1:'😌', e1name:'全身リラックス', e1desc:'筋肉の緊張がほぐれる',
+        effect2:'🧘', e2name:'自律神経調整', e2desc:'副交感神経が優位になる',
+        steps:['仰向けに寝る','鼻からゆっくり息を吸いながら両手を頭上に伸ばす','口からゆっくり吐きながら腕を戻す','全身のストレッチを5分続ける'],
+        tip:'就寝前に行うと睡眠の質も上がります。',
+        arrange:'ヨガのポーズを取り入れると楽しいストレッチになります！' },
+    ]
+  },
+  social: { name:'お友達との距離感（社会性）', emoji:'🤝', gradient:'linear-gradient(135deg,#00CEC9,#0984E3)',
+    exercises:[
+      { name:'背中合わせ立ち上がり', emoji:'🤜', mode:'👫 ペア', time:'3〜5分', diff:'★★☆', age:'4歳〜', tool:'なし', place:'室内',
+        approach:'距離感・協調・信頼', approachDesc:'体を近づけて協力する動作で適切な距離感と信頼感が育まれます',
+        effect1:'🤝', e1name:'協調性', e1desc:'相手と合わせて動く力',
+        effect2:'❤️', e2name:'信頼感', e2desc:'体を預け合う安心感',
+        steps:['背中合わせに座る','腕を組む','「いち・に・さん」で一緒に立ち上がる','座って繰り返す'],
+        tip:'最初はゆっくりカウントしてタイミングを合わせましょう。',
+        arrange:'3人・4人でもできます！グループで挑戦しよう。' },
+      { name:'風船バレー（2人）', emoji:'🎈', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'風船', place:'室内',
+        approach:'協調・距離感', approachDesc:'風船を打ち合うことで相手の動きを読む力と適切な距離感が育まれます',
+        effect1:'🤝', e1name:'協調性', e1desc:'相手のペースに合わせる力',
+        effect2:'👀', e2name:'アイコンタクト', e2desc:'相手を見ながら動く練習',
+        steps:['向かい合って立つ','風船を打ち合って落とさないようにする','何往復続けられるか数える','記録更新に挑戦'],
+        tip:'最初は近い距離から始めて、慣れたら少しずつ離れてみよう。',
+        arrange:'ルールを少し変えてネット（テープ）を張ってみよう！' },
+      { name:'まねっこ鏡ゲーム', emoji:'🪞', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'観察力・共感', approachDesc:'相手の動きをまねることで相手への注目と共感する力が育まれます',
+        effect1:'👀', e1name:'観察力', e1desc:'相手をよく見る力',
+        effect2:'🧠', e2name:'共感力', e2desc:'相手の動きを感じ取る力',
+        steps:['向かい合って立つ','一人がゆっくり動く（手を上げるなど）','もう一人が鏡のようにまねする','3〜5分後に役割交代'],
+        tip:'「鏡になりきって！」と声がけしましょう。動きはゆっくりが大事です。',
+        arrange:'音楽に合わせてゆっくり動くとより美しいゲームになります！' },
+      { name:'手のひらプッシュ', emoji:'🤜', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'距離感・力加減', approachDesc:'手のひらを合わせて押し合うことで力の加減と適切な距離感を学べます',
+        effect1:'🤝', e1name:'距離感学習', e1desc:'相手との適切な距離を体感',
+        effect2:'⚖️', e2name:'力加減', e2desc:'相手に合わせた力を使う',
+        steps:['向かい合って立つ','両手のひらをくっつける','お互いに押し合う','力加減を変えながら5〜10秒行う'],
+        tip:'「相手が転ばないように力を調整しよう」と声がけしましょう。',
+        arrange:'目を閉じて相手の力加減を感じながらやってみよう！' },
+      { name:'二人三脚', emoji:'🏃', mode:'👫 ペア', time:'3〜5分', diff:'★★☆', age:'5歳〜', tool:'タオル', place:'室内・外',
+        approach:'協調・合わせる力', approachDesc:'体を結んで一緒に動くことで相手に合わせる力と協調性が育まれます',
+        effect1:'🤝', e1name:'協調性', e1desc:'相手のリズムに合わせる力',
+        effect2:'💬', e2name:'コミュニケーション', e2desc:'言葉でやりとりしながら動く',
+        steps:['二人の内側の足をタオルで結ぶ','「いち・に・いち・に」と掛け声をかける','ゆっくりと前に進む','コースを決めてゴールを目指す'],
+        tip:'最初は「右・左・右・左」と口に出しながら歩くと合わせやすいです。',
+        arrange:'コースを作ってタイムを計ろう！' },
+      { name:'ボール転がしキャッチ', emoji:'⚽', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'3歳〜', tool:'ボール', place:'室内',
+        approach:'アイコンタクト・順番', approachDesc:'ボールを通じたやりとりで目を合わせる力と順番を守る力が育まれます',
+        effect1:'👀', e1name:'アイコンタクト', e1desc:'相手を見てボールを渡す',
+        effect2:'⏳', e2name:'順番を守る', e2desc:'自分の番を待つ練習',
+        steps:['向かい合って床に座る','「行くよ！」と声をかけてから転がす','受け取ったら同じように返す','テンポを上げていく'],
+        tip:'「目が合ったら転がそう」と声がけするとアイコンタクトが自然に生まれます。',
+        arrange:'両手でキャッチに挑戦してみよう！' },
+      { name:'新聞紙運び（2人）', emoji:'📰', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'4歳〜', tool:'新聞紙', place:'室内',
+        approach:'距離感・協力', approachDesc:'体で挟んで運ぶ動作で相手との距離感と協力する力が育まれます',
+        effect1:'🤝', e1name:'協力', e1desc:'一緒に達成する喜び',
+        effect2:'📏', e2name:'距離感学習', e2desc:'適切な距離を体で覚える',
+        steps:['新聞紙を1〜2枚折りたたむ','二人の体（おなかや背中）で挟む','手を使わずに目的地まで運ぶ','落としたらスタートに戻る'],
+        tip:'最初は大きめの新聞紙から挑戦しましょう。',
+        arrange:'コースを長くしたり曲がり角を増やして難易度アップ！' },
+      { name:'リズム手合わせ', emoji:'👏', mode:'👫 ペア', time:'5分', diff:'★☆☆', age:'3歳〜', tool:'なし', place:'室内',
+        approach:'タイミング・対人意識', approachDesc:'向かい合って手合わせのリズムを合わせることで対人意識とタイミング感が育まれます',
+        effect1:'🎵', e1name:'リズム感', e1desc:'相手と息を合わせる力',
+        effect2:'👀', e2name:'対人意識', e2desc:'相手を見て動く力',
+        steps:['向かい合って座る','「パン・パン・パンパンパン」など簡単なリズムから始める','手を合わせながらリズムを刻む','慣れたらリズムを複雑にする'],
+        tip:'昔ながらの「あんたがたどこさ」手遊びも効果的です。',
+        arrange:'立って足踏みも加えると全身運動になります！' },
+      { name:'肩組み歩き', emoji:'🤝', mode:'👫 ペア', time:'3〜5分', diff:'★☆☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'距離感・信頼', approachDesc:'肩を組んで歩くことで相手との距離感と信頼感が身体的に体験できます',
+        effect1:'📏', e1name:'距離感学習', e1desc:'体の距離感を自然に学ぶ',
+        effect2:'❤️', e2name:'信頼感', e2desc:'体を寄せ合う安心感',
+        steps:['横に並んで肩を組む','「いち・に」のかけ声で同じ足から踏み出す','部屋の端まで歩く','折り返して戻る'],
+        tip:'最初は歩幅を小さくして合わせやすくしましょう。',
+        arrange:'目隠しをした相手をリードして歩くゲームにしよう！' },
+      { name:'背中に文字を書く', emoji:'✏️', mode:'👫 ペア', time:'5〜10分', diff:'★☆☆', age:'5歳〜', tool:'なし', place:'室内',
+        approach:'触覚・コミュニケーション', approachDesc:'背中への触覚刺激と文字当てゲームでコミュニケーション力が育まれます',
+        effect1:'✋', e1name:'触覚認識', e1desc:'背中の触覚を意識する',
+        effect2:'💬', e2name:'コミュニケーション', e2desc:'やりとりする楽しさを体験',
+        steps:['子どもが背中を向けて座る','大人が背中にゆっくり文字を書く','子どもが何の文字か当てる','正解したら交代'],
+        tip:'最初は「〇・×・△」などの図形から始めるとわかりやすいです。',
+        arrange:'ひらがな→数字→言葉と段階的に難しくしよう！' },
+    ]
+  }
+};
+
+// URLパラメータ取得
+const params = new URLSearchParams(window.location.search);
+const catKey = params.get('cat') || 'sowasowa';
+const idx    = parseInt(params.get('idx') || '0', 10);
+const cat    = CATEGORIES[catKey] || CATEGORIES.sowasowa;
+const ex     = cat.exercises[idx] || cat.exercises[0];
+
+// ヒーロー更新
+document.querySelector('.hero').style.background = cat.gradient;
+document.querySelector('.hero-emoji').textContent = ex.emoji;
+document.querySelector('.hero-title').textContent = ex.name;
+
+const pills = document.querySelectorAll('.hero-pill');
+const pillData = [ex.mode, `🕐 ${ex.time}`, ex.diff, `${ex.age}`];
+pills.forEach((p, i) => { if (pillData[i]) p.textContent = pillData[i]; });
+
+// アプローチ更新
+document.querySelector('.ap-name').textContent = ex.approach;
+document.querySelector('.ap-desc').textContent = ex.approachDesc;
+
+const apItems = document.querySelectorAll('.approach-item.secondary');
+apItems[0].querySelector('.ap-icon').textContent = ex.effect1;
+apItems[0].querySelector('.ap-name').textContent = ex.e1name;
+apItems[0].querySelector('.ap-desc').textContent = ex.e1desc;
+apItems[1].querySelector('.ap-icon').textContent = ex.effect2;
+apItems[1].querySelector('.ap-name').textContent = ex.e2name;
+apItems[1].querySelector('.ap-desc').textContent = ex.e2desc;
+
+// 基本情報更新
+const metaValues = document.querySelectorAll('.meta-value');
+metaValues[0].textContent = ex.tool;
+metaValues[1].textContent = ex.time;
+metaValues[2].textContent = ex.age;
+metaValues[3].textContent = ex.place;
+
+// やり方更新
+const stepList = document.querySelector('.step-list');
+stepList.innerHTML = ex.steps.map((s, i) => `
+  <div class="step-item">
+    <div class="step-num">${i+1}</div>
+    <div class="step-text">${s}</div>
+  </div>
+`).join('');
+
+// ポイント・アレンジ更新
+document.querySelectorAll('.box-text')[0].textContent = ex.tip;
+document.querySelectorAll('.box-text')[1].textContent = ex.arrange;
+
+// ===== スティックマン：svg-library.js から該当SVGを取得（file:// でも動作） =====
+function renderMotion(ex) {
+  const svgHtml = (window.EXERCISE_SVGS && window.EXERCISE_SVGS[ex.name]) || '';
+  const inner = svgHtml
+    ? svgHtml.replace(/<svg([^>]*)class="([^"]*)"/, '<svg$1class="$2 motion-svg"')
+             .replace(/<svg(?![^>]*class=)/, '<svg class="motion-svg"')
+    : `<div style="font-size:80px;line-height:1">${ex.emoji}</div>`;
+  document.getElementById('motion-section').innerHTML = `
+    <div class="motion-anim">
+      <div class="motion-bg-circle"></div>
+      <span class="motion-badge">▶ アニメーション</span>
+      <div class="motion-stage">${inner}</div>
+      <div class="motion-label">${ex.emoji} ${ex.name}</div>
+    </div>
+  `;
+}
+renderMotion(ex);
+
+// ===== お気に入りボタン =====
+const favBtn = document.getElementById('fav-btn');
+function syncFavBtn() {
+  const on = window.FAV && window.FAV.has(catKey, idx);
+  favBtn.textContent = on ? '❤️' : '🤍';
+}
+favBtn.addEventListener('click', () => {
+  if (!window.FAV) return;
+  window.FAV.toggle(catKey, idx);
+  syncFavBtn();
+});
+syncFavBtn();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

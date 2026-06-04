@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOMAPO - 運動リスト</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #FFF9F5;
+      min-height: 100vh;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #FFF9F5;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      padding: 16px 32px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3a3a3a;
+      flex-shrink: 0;
+    }
+
+    .header {
+      padding: 10px 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      width: 38px; height: 38px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* カテゴリバナー */
+    .category-banner {
+      margin: 14px 18px 0;
+      border-radius: 24px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, #43E97B 0%, #38F9D7 40%, #4FACFE 100%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-circle {
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+    }
+
+    .banner-icon {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .banner-text { position: relative; z-index: 1; }
+
+    .banner-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .banner-count {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 3px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* ひとり・ペアの凡例 */
+    .legend {
+      display: flex;
+      gap: 10px;
+      padding: 10px 18px 0;
+      flex-shrink: 0;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-weight: 700;
+      color: #6B7A8D;
+    }
+
+    .legend-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .solo-badge  { background: #E8F4FF; color: #1565C0; }
+    .pair-badge  { background: #FFF0F9; color: #AD1457; }
+
+    /* フィルター */
+    .filters {
+      padding: 4px 18px 0;
+      flex-shrink: 0;
+    }
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: nowrap;
+    }
+    .filter-label {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 800;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      width: 36px;
+      text-align: right;
+    }
+    .filter-chips {
+      flex: 1;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-chip {
+      padding: 6px 12px;
+      border-radius: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      background: #fff;
+      color: #8B95A1;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filter-chip:hover { background: #F7F8FC; }
+    .filter-chip.active {
+      background: linear-gradient(135deg, #43E97B, #4FACFE);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 3px 10px rgba(67,233,123,0.3);
+    }
+    .result-info {
+      padding: 8px 20px 0;
+      font-size: 11px;
+      color: #A8B2BE;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .empty-list {
+      text-align: center;
+      padding: 40px 20px;
+      color: #A8B2BE;
+      font-size: 13px;
+    }
+    .empty-list-emoji { font-size: 40px; margin-bottom: 8px; }
+
+    /* スクロールエリア */
+    .scroll-area {
+      flex: 1;
+      padding: 12px 18px 20px;
+    }
+    .page-safety {
+      padding: 8px 18px 100px;
+      text-align: center;
+    }
+    .page-safety a {
+      display: inline-block;
+      font-size: 11px;
+      color: #B07A00;
+      background: #FFF8DC;
+      border: 1px solid #FFE6A0;
+      border-radius: 14px;
+      padding: 7px 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* 運動カード */
+    .exercise-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 14px 14px 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exercise-card:active { transform: scale(0.98); }
+
+    .exercise-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .card-teal::before   { background: linear-gradient(180deg, #43E97B, #38F9D7); }
+    .card-pink::before   { background: linear-gradient(180deg, #FF6B9D, #FF8E53); }
+    .card-blue::before   { background: linear-gradient(180deg, #4FACFE, #00F2FE); }
+    .card-yellow::before { background: linear-gradient(180deg, #FFD93D, #FF9F43); }
+    .card-purple::before { background: linear-gradient(180deg, #A29BFE, #6C5CE7); }
+
+    .ex-icon {
+      width: 50px; height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .ic-teal   { background: #E0FBF0; }
+    .ic-pink   { background: #FFE8F5; }
+    .ic-blue   { background: #E8F4FF; }
+    .ic-yellow { background: #FFF8DC; }
+    .ic-purple { background: #F0EBFF; }
+    .ic-green  { background: #E8FFF3; }
+    .ic-orange { background: #FFF3E0; }
+    .ic-red    { background: #FFE8E8; }
+
+    .ex-body { flex: 1; min-width: 0; }
+
+    .ex-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .ex-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    /* ひとり・ペアバッジ */
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      flex-shrink: 0;
+    }
+
+    .mode-solo { background: #E8F4FF; color: #1565C0; }
+    .mode-pair { background: #FFF0F9; color: #AD1457; }
+    .mode-both {
+      background: linear-gradient(135deg, #E8F4FF, #FFF0F9);
+      color: #6B4FA0;
+      border: 1px solid rgba(107,79,160,0.15);
+    }
+
+    .ex-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .ex-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .tg-teal   { background: #E0FBF0; color: #1E8A55; }
+    .tg-gray   { background: #F0F2F5; color: #636e72; }
+    .tg-yellow { background: #FFF9E0; color: #C8860A; }
+    .tg-pink   { background: #FFE8F5; color: #C0296E; }
+    .tg-blue   { background: #E8F4FF; color: #1565C0; }
+
+    .ex-meta {
+      font-size: 11px;
+      color: #A8B2BE;
+      margin-top: 4px;
+    }
+
+    .ex-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .fav-btn {
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.3;
+    }
+
+    .fav-btn.active {
+      opacity: 1;
+    }
+
+    .diff-stars { font-size: 11px; }
+
+    /* ボトムナビ */
+    .bottom-nav {
+      position: absolute;
+      bottom: 16px; left: 18px; right: 18px;
+      background: #fff;
+      border-radius: 28px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 6px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: #C0C8D0;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      min-width: 52px;
+    }
+
+    .nav-item.active { color: #38D39F; }
+
+    .nav-icon-wrap {
+      width: 40px; height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 19px;
+    }
+
+    .nav-item.active .nav-icon-wrap { background: #E0FBF0; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <div class="header">
+      <div class="back-btn">←</div>
+      <div class="header-title">そわそわ・じっとできない</div>
+    </div>
+
+    <div class="category-banner">
+      <div class="banner-circle"></div>
+      <div class="banner-icon">🌀</div>
+      <div class="banner-text">
+        <div class="banner-name">そわそわ・じっとできない</div>
+        <div class="banner-count">10種類 · 道具なしから始められます</div>
+      </div>
+    </div>
+
+    <!-- フィルター -->
+    <div class="filters">
+      <div class="filter-row">
+        <div class="filter-label">人数</div>
+        <div class="filter-chips" id="mode-chips"></div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">道具</div>
+        <div class="filter-chips" id="tool-chips"></div>
+      </div>
+    </div>
+    <div class="result-info" id="result-info"></div>
+
+    <div class="scroll-area">
+
+      <div class="exercise-card card-teal">
+        <div class="ex-icon ic-teal">🧱</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">壁押し</div>
+            <span class="mode-badge mode-solo">👤 ひとり</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-teal">固有感覚</span>
+            <span class="ex-tag tg-gray">道具なし</span>
+          </div>
+          <div class="ex-meta">🕐 1〜2分 · 3歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn active">❤️</div>
+          <div class="diff-stars">★☆☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-yellow">
+        <div class="ex-icon ic-yellow">📚</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">重い荷物運び</div>
+            <span class="mode-badge mode-solo">👤 ひとり</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-yellow">固有感覚</span>
+            <span class="ex-tag tg-gray">本</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 4歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★☆☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-pink">
+        <div class="ex-icon ic-pink">🧺</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">タオル引っ張り合い</div>
+            <span class="mode-badge mode-pair">👫 ペア</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-pink">固有感覚</span>
+            <span class="ex-tag tg-gray">タオル</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 3歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★☆☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-blue">
+        <div class="ex-icon ic-blue">🛏</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">くるみ巻き</div>
+            <span class="mode-badge mode-pair">👫 ペア</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-blue">触覚</span>
+            <span class="ex-tag tg-gray">毛布</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 2歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn active">❤️</div>
+          <div class="diff-stars">★☆☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-teal">
+        <div class="ex-icon ic-green">🫂</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">ぎゅっとハグ</div>
+            <span class="mode-badge mode-pair">👫 ペア</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-teal">触覚</span>
+            <span class="ex-tag tg-gray">道具なし</span>
+          </div>
+          <div class="ex-meta">🕐 1〜2分 · 2歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★☆☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-yellow">
+        <div class="ex-icon ic-orange">🧹</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">雑巾がけ競争</div>
+            <span class="mode-badge mode-both">👤👫 どちらも</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-yellow">体幹</span>
+            <span class="ex-tag tg-gray">雑巾</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 4歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★★☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-purple">
+        <div class="ex-icon ic-purple">🛋</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">クッション挟みジャンプ</div>
+            <span class="mode-badge mode-solo">👤 ひとり</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-pink">固有感覚</span>
+            <span class="ex-tag tg-gray">クッション</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 4歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★★☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-teal">
+        <div class="ex-icon ic-teal">🏋️</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">腕立て伏せキープ</div>
+            <span class="mode-badge mode-solo">👤 ひとり</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-teal">体幹</span>
+            <span class="ex-tag tg-gray">道具なし</span>
+          </div>
+          <div class="ex-meta">🕐 1〜2分 · 5歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★★☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-blue">
+        <div class="ex-icon ic-blue">📖</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">重い本を背中にハイハイ</div>
+            <span class="mode-badge mode-both">👤👫 どちらも</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-blue">固有感覚</span>
+            <span class="ex-tag tg-gray">本</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 4歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★★☆</div>
+        </div>
+      </div>
+
+      <div class="exercise-card card-pink">
+        <div class="ex-icon ic-red">🪑</div>
+        <div class="ex-body">
+          <div class="ex-top">
+            <div class="ex-name">椅子の下くぐりUターン</div>
+            <span class="mode-badge mode-solo">👤 ひとり</span>
+          </div>
+          <div class="ex-tags">
+            <span class="ex-tag tg-pink">感覚統合</span>
+            <span class="ex-tag tg-gray">椅子</span>
+          </div>
+          <div class="ex-meta">🕐 3〜5分 · 3歳〜</div>
+        </div>
+        <div class="ex-right">
+          <div class="fav-btn">🤍</div>
+          <div class="diff-stars">★★☆</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-safety">
+      <a href="index.html#safety">⚠️ ご利用前に「安全への注意」をご確認ください</a>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon-wrap">🏠</div>
+        <span>ホーム</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon-wrap">🔍</div>
+        <span>さがす</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon-wrap">⭐</div>
+        <span>お気に入り</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon-wrap">👤</div>
+        <span>設定</span>
+      </div>
+    </div>
+
+  </div>
+<script src="exercises-data.js"></script>
+<script src="favorites.js"></script>
+<script>
+const CATEGORIES = window.CATEGORIES;
+/* 旧データ（exercises-data.js に移行済み）
+const _LEGACY = {
+  sowasowa: {
+    name: 'そわそわ・じっとできない',
+    emoji: '🌀',
+    gradient: 'linear-gradient(135deg,#43E97B 0%,#38F9D7 40%,#4FACFE 100%)',
+    exercises: [
+      { name:'壁押し',          icon:'🧱', ic:'ic-teal',  color:'card-teal',   tags:['固有感覚','道具なし'], meta:'🕐 1〜2分 · 3歳〜', mode:'solo' },
+      { name:'重い荷物運び',    icon:'📚', ic:'ic-yellow', color:'card-yellow', tags:['固有感覚','本'],      meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'タオル引っ張り合い', icon:'🧺', ic:'ic-pink', color:'card-pink',  tags:['固有感覚','タオル'],  meta:'🕐 3〜5分 · 3歳〜', mode:'pair' },
+      { name:'くるみ巻き',      icon:'🛏', ic:'ic-blue',  color:'card-blue',   tags:['触覚','毛布'],        meta:'🕐 3〜5分 · 2歳〜', mode:'pair' },
+      { name:'ぎゅっとハグ',    icon:'🫂', ic:'ic-green', color:'card-teal',   tags:['触覚','道具なし'],    meta:'🕐 1〜2分 · 2歳〜', mode:'pair' },
+      { name:'雑巾がけ競争',    icon:'🧹', ic:'ic-orange',color:'card-yellow', tags:['体幹','雑巾'],        meta:'🕐 3〜5分 · 4歳〜', mode:'both' },
+      { name:'クッション挟みジャンプ', icon:'🛋', ic:'ic-purple', color:'card-purple', tags:['固有感覚','クッション'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'腕立て伏せキープ', icon:'🏋️', ic:'ic-teal', color:'card-teal',  tags:['体幹','道具なし'],    meta:'🕐 1〜2分 · 5歳〜', mode:'solo' },
+      { name:'重い本を背中にハイハイ', icon:'📖', ic:'ic-blue', color:'card-blue', tags:['固有感覚','本'],  meta:'🕐 3〜5分 · 4歳〜', mode:'both' },
+      { name:'椅子の下くぐりUターン', icon:'🪑', ic:'ic-red', color:'card-pink',  tags:['感覚統合','椅子'], meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+    ]
+  },
+  posture: {
+    name: '姿勢が崩れやすい', emoji: '🧍',
+    gradient: 'linear-gradient(135deg,#FF6B9D,#FF8E53)',
+    exercises: [
+      { name:'クマ歩き',         icon:'🐻', ic:'ic-teal',  color:'card-teal',   tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'カニ歩き',         icon:'🦀', ic:'ic-pink',  color:'card-pink',   tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'ブリッジ',         icon:'🌉', ic:'ic-yellow', color:'card-yellow', tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'飛行機ポーズ',     icon:'✈️', ic:'ic-blue',  color:'card-blue',   tags:['バランス','道具なし'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'ボールうつ伏せ',   icon:'🟡', ic:'ic-yellow', color:'card-yellow', tags:['体幹','バランスボール'], meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
+      { name:'本を頭に乗せて歩く', icon:'📚', ic:'ic-blue', color:'card-blue',  tags:['姿勢','本'],        meta:'🕐 3〜5分 · 5歳〜', mode:'solo' },
+      { name:'壁に背をつけて立つ', icon:'🧱', ic:'ic-teal', color:'card-teal',  tags:['姿勢','道具なし'],  meta:'🕐 1〜2分 · 3歳〜', mode:'solo' },
+      { name:'タオルを背中に挟んで歩く', icon:'🧺', ic:'ic-orange', color:'card-yellow', tags:['姿勢','タオル'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'うつ伏せで足バタバタ', icon:'🦵', ic:'ic-green', color:'card-teal', tags:['背筋','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'タオルの綱引き',   icon:'🪢', ic:'ic-pink',  color:'card-pink',   tags:['体幹','タオル'],    meta:'🕐 3〜5分 · 4歳〜', mode:'pair' },
+    ]
+  },
+  balance: {
+    name: 'バランスが苦手', emoji: '⚖️',
+    gradient: 'linear-gradient(135deg,#FFD93D,#FF9F43)',
+    exercises: [
+      { name:'飛び石渡り',         icon:'🪨', ic:'ic-yellow', color:'card-yellow', tags:['バランス','クッション'], meta:'🕐 5〜10分 · 3歳〜', mode:'solo' },
+      { name:'ケンケンパ',         icon:'🦶', ic:'ic-teal',  color:'card-teal',   tags:['バランス','道具なし'],  meta:'🕐 5分 · 4歳〜', mode:'solo' },
+      { name:'スローモーション歩き', icon:'🚶', ic:'ic-blue', color:'card-blue',   tags:['バランス','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'目閉じ片足立ち',     icon:'🧘', ic:'ic-purple', color:'card-purple', tags:['バランス','道具なし'],  meta:'🕐 1〜2分 · 5歳〜', mode:'solo' },
+      { name:'ボールに座ってバランス', icon:'🟡', ic:'ic-yellow', color:'card-yellow', tags:['体幹','バランスボール'], meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
+      { name:'ラインの上を歩く',   icon:'➡️', ic:'ic-pink',  color:'card-pink',   tags:['バランス','テープ'],    meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'後ろ歩き',           icon:'🔙', ic:'ic-green', color:'card-teal',   tags:['バランス','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'目閉じその場足踏み', icon:'👣', ic:'ic-purple', color:'card-purple', tags:['バランス','道具なし'],  meta:'🕐 2〜3分 · 5歳〜', mode:'solo' },
+      { name:'枕の上でバランス',   icon:'🛏', ic:'ic-blue',  color:'card-blue',   tags:['バランス','枕'],        meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'タオル丸めて片足立ち', icon:'🧺', ic:'ic-orange', color:'card-yellow', tags:['バランス','タオル'],   meta:'🕐 2〜3分 · 4歳〜', mode:'solo' },
+    ]
+  },
+  focus: {
+    name: '集中力が続かない', emoji: '🎯',
+    gradient: 'linear-gradient(135deg,#74B9FF,#4FACFE)',
+    exercises: [
+      { name:'風船キープ',          icon:'🎈', ic:'ic-pink',  color:'card-pink',   tags:['集中','風船'],      meta:'🕐 5分 · 3歳〜', mode:'both' },
+      { name:'豆つかみリレー',      icon:'🫘', ic:'ic-yellow', color:'card-yellow', tags:['集中','小豆・皿'],  meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
+      { name:'足でジャンケン',      icon:'👣', ic:'ic-blue',  color:'card-blue',   tags:['集中','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'both' },
+      { name:'キャンドル呼吸カウント', icon:'🕯️', ic:'ic-teal', color:'card-teal', tags:['集中','道具なし'],  meta:'🕐 3分 · 3歳〜',  mode:'solo' },
+      { name:'バランスボールでキャッチ', icon:'🟡', ic:'ic-yellow', color:'card-yellow', tags:['集中','ボール'], meta:'🕐 5〜10分 · 4歳〜', mode:'pair' },
+      { name:'まねっこ体操',        icon:'🤸', ic:'ic-green', color:'card-teal',   tags:['集中','道具なし'],  meta:'🕐 5〜10分 · 3歳〜', mode:'pair' },
+      { name:'手拍子リズム遊び',    icon:'👏', ic:'ic-blue',  color:'card-blue',   tags:['集中','道具なし'],  meta:'🕐 5分 · 3歳〜',   mode:'both' },
+      { name:'ろうそく呼吸',        icon:'💨', ic:'ic-purple', color:'card-purple', tags:['集中','道具なし'],  meta:'🕐 3分 · 3歳〜',   mode:'solo' },
+      { name:'風船を頭で当てる',    icon:'🎈', ic:'ic-pink',  color:'card-pink',   tags:['集中','風船'],      meta:'🕐 5分 · 4歳〜',   mode:'both' },
+      { name:'紙風船バレー',        icon:'📰', ic:'ic-orange', color:'card-yellow', tags:['集中','新聞紙'],    meta:'🕐 5分 · 3歳〜',   mode:'pair' },
+    ]
+  },
+  finemotor: {
+    name: '手先が不器用', emoji: '✋',
+    gradient: 'linear-gradient(135deg,#A29BFE,#6C5CE7)',
+    exercises: [
+      { name:'洗濯バサミつけ外し',  icon:'🧺', ic:'ic-purple', color:'card-purple', tags:['指先','洗濯バサミ'], meta:'🕐 5〜10分 · 3歳〜', mode:'solo' },
+      { name:'スポンジ絞り',        icon:'🧽', ic:'ic-blue',  color:'card-blue',   tags:['握力','スポンジ'],   meta:'🕐 5分 · 3歳〜',   mode:'solo' },
+      { name:'新聞紙ちぎり',        icon:'📰', ic:'ic-orange', color:'card-yellow', tags:['指先','新聞紙'],     meta:'🕐 5分 · 2歳〜',   mode:'solo' },
+      { name:'豆つまみ',            icon:'🥢', ic:'ic-yellow', color:'card-yellow', tags:['指先','小豆・箸'],   meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
+      { name:'テープはがし',        icon:'🖊️', ic:'ic-teal',  color:'card-teal',   tags:['指先','マスキングテープ'], meta:'🕐 5分 · 2歳〜', mode:'solo' },
+      { name:'ひも通し',            icon:'🪡', ic:'ic-blue',  color:'card-blue',   tags:['両手協調','ひも'],   meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
+      { name:'スポンジでスタンプ',  icon:'🎨', ic:'ic-pink',  color:'card-pink',   tags:['指先','スポンジ'],   meta:'🕐 5〜10分 · 2歳〜', mode:'solo' },
+      { name:'輪ゴムの引っ張り',    icon:'🔵', ic:'ic-purple', color:'card-purple', tags:['指先','輪ゴム'],     meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'ペットボトルキャップ開け閉め', icon:'🍶', ic:'ic-green', color:'card-teal', tags:['手首','ペットボトル'], meta:'🕐 5分 · 4歳〜', mode:'solo' },
+      { name:'紐結び練習',          icon:'🪢', ic:'ic-orange', color:'card-yellow', tags:['両手協調','紐'],     meta:'🕐 5〜10分 · 5歳〜', mode:'solo' },
+    ]
+  },
+  sensory: {
+    name: '感覚過敏・感覚鈍麻', emoji: '👐',
+    gradient: 'linear-gradient(135deg,#55EFC4,#00B894)',
+    exercises: [
+      { name:'足裏ころころ',       icon:'🦶', ic:'ic-teal',  color:'card-teal',   tags:['触覚','ペットボトル'], meta:'🕐 3〜5分 · 2歳〜', mode:'solo' },
+      { name:'砂・豆の手遊び',     icon:'🫘', ic:'ic-yellow', color:'card-yellow', tags:['触覚','小豆・砂'],    meta:'🕐 5〜10分 · 2歳〜', mode:'solo' },
+      { name:'新聞紙ぐしゃぐしゃ', icon:'📰', ic:'ic-orange', color:'card-yellow', tags:['触覚','新聞紙'],      meta:'🕐 3〜5分 · 2歳〜', mode:'solo' },
+      { name:'背中トントン',       icon:'👋', ic:'ic-green', color:'card-teal',   tags:['触覚','道具なし'],    meta:'🕐 3〜5分 · 2歳〜', mode:'pair' },
+      { name:'霧吹き遊び',         icon:'💧', ic:'ic-blue',  color:'card-blue',   tags:['触覚','霧吹き'],      meta:'🕐 5分 · 2歳〜',   mode:'both' },
+      { name:'タオルでこすりこすり', icon:'🧺', ic:'ic-pink', color:'card-pink',   tags:['触覚','タオル'],      meta:'🕐 3〜5分 · 2歳〜', mode:'pair' },
+      { name:'氷を手に乗せる',     icon:'🧊', ic:'ic-blue',  color:'card-blue',   tags:['触覚','氷'],          meta:'🕐 1〜2分 · 3歳〜', mode:'solo' },
+      { name:'泡立て遊び',         icon:'🫧', ic:'ic-teal',  color:'card-teal',   tags:['触覚','石鹸・水'],    meta:'🕐 5〜10分 · 2歳〜', mode:'solo' },
+      { name:'足裏スタンプ',       icon:'👣', ic:'ic-purple', color:'card-purple', tags:['足裏感覚','絵の具'],  meta:'🕐 10分 · 2歳〜',  mode:'both' },
+      { name:'綿をほぐす',         icon:'🌸', ic:'ic-pink',  color:'card-pink',   tags:['触覚','綿'],          meta:'🕐 5〜10分 · 2歳〜', mode:'solo' },
+    ]
+  },
+  stamina: {
+    name: '体力・持久力が弱い', emoji: '💪',
+    gradient: 'linear-gradient(135deg,#FDCB6E,#E17055)',
+    exercises: [
+      { name:'その場行進',          icon:'🚶', ic:'ic-yellow', color:'card-yellow', tags:['持久力','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'スローバーピー',      icon:'🏋️', ic:'ic-orange', color:'card-yellow', tags:['全身','道具なし'],   meta:'🕐 3〜5分 · 5歳〜', mode:'solo' },
+      { name:'壁よりかかりスクワット', icon:'🧱', ic:'ic-teal', color:'card-teal', tags:['脚力','道具なし'],   meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'階段上り下り',        icon:'🪜', ic:'ic-blue',  color:'card-blue',   tags:['有酸素','階段'],      meta:'🕐 5〜10分 · 3歳〜', mode:'solo' },
+      { name:'風船ふくらまし',      icon:'🎈', ic:'ic-pink',  color:'card-pink',   tags:['肺活量','風船'],      meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'タオルジャンプ',      icon:'🧺', ic:'ic-orange', color:'card-yellow', tags:['脚力','タオル'],      meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'音楽に合わせて踊る',  icon:'🎵', ic:'ic-purple', color:'card-purple', tags:['持久力','道具なし'],  meta:'🕐 5〜10分 · 2歳〜', mode:'both' },
+      { name:'カエルジャンプ',      icon:'🐸', ic:'ic-green', color:'card-teal',   tags:['全身','道具なし'],    meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'親子でスクワット',    icon:'👨‍👧', ic:'ic-blue', color:'card-blue',  tags:['脚力','道具なし'],    meta:'🕐 3〜5分 · 4歳〜', mode:'pair' },
+      { name:'1分間ステップ',       icon:'⏱', ic:'ic-yellow', color:'card-yellow', tags:['有酸素','道具なし'],  meta:'🕐 1〜3分 · 3歳〜', mode:'solo' },
+    ]
+  },
+  sound: {
+    name: '音・光に敏感', emoji: '👂',
+    gradient: 'linear-gradient(135deg,#FF7675,#D63031)',
+    exercises: [
+      { name:'耳ふさぎ深呼吸',       icon:'🙉', ic:'ic-red',   color:'card-pink',   tags:['聴覚','道具なし'],  meta:'🕐 2〜3分 · 2歳〜', mode:'solo' },
+      { name:'低い声でハミング',     icon:'🎵', ic:'ic-pink',  color:'card-pink',   tags:['聴覚統合','道具なし'], meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'暗い部屋でくるまる',   icon:'🌙', ic:'ic-purple', color:'card-purple', tags:['視覚','毛布'],      meta:'🕐 5〜10分 · 2歳〜', mode:'solo' },
+      { name:'ゆっくり深呼吸',       icon:'💨', ic:'ic-teal',  color:'card-teal',   tags:['自律神経','道具なし'], meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'テント遊び',           icon:'⛺', ic:'ic-green', color:'card-teal',   tags:['感覚遮断','毛布・椅子'], meta:'🕐 10〜15分 · 2歳〜', mode:'solo' },
+      { name:'手でグーパー体操',     icon:'✊', ic:'ic-orange', color:'card-yellow', tags:['覚醒調整','道具なし'], meta:'🕐 2〜3分 · 2歳〜', mode:'solo' },
+      { name:'重いもの抱えて歩く',   icon:'📦', ic:'ic-blue',  color:'card-blue',   tags:['固有感覚','本'],    meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'目を閉じて音あて',     icon:'👂', ic:'ic-purple', color:'card-purple', tags:['聴覚','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'pair' },
+      { name:'小さな音を聞く瞑想',   icon:'🔇', ic:'ic-pink',  color:'card-pink',   tags:['聴覚','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'ゆっくりストレッチ＆深呼吸', icon:'🧘', ic:'ic-teal', color:'card-teal', tags:['自律神経','道具なし'], meta:'🕐 5〜10分 · 3歳〜', mode:'solo' },
+    ]
+  },
+  social: {
+    name: 'お友達との距離感（社会性）', emoji: '🤝',
+    gradient: 'linear-gradient(135deg,#00CEC9,#0984E3)',
+    exercises: [
+      { name:'背中合わせ立ち上がり', icon:'🤜', ic:'ic-teal',  color:'card-teal',   tags:['協調','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'pair' },
+      { name:'風船バレー（2人）',   icon:'🎈', ic:'ic-pink',  color:'card-pink',   tags:['協調','風船'],      meta:'🕐 5〜10分 · 3歳〜', mode:'pair' },
+      { name:'まねっこ鏡ゲーム',    icon:'🪞', ic:'ic-blue',  color:'card-blue',   tags:['共感','道具なし'],  meta:'🕐 5〜10分 · 3歳〜', mode:'pair' },
+      { name:'手のひらプッシュ',    icon:'🤜', ic:'ic-teal',  color:'card-teal',   tags:['距離感','道具なし'], meta:'🕐 3〜5分 · 3歳〜', mode:'pair' },
+      { name:'二人三脚',            icon:'🏃', ic:'ic-yellow', color:'card-yellow', tags:['協調','タオル'],    meta:'🕐 3〜5分 · 5歳〜', mode:'pair' },
+      { name:'ボール転がしキャッチ', icon:'⚽', ic:'ic-green', color:'card-teal',   tags:['順番','ボール'],    meta:'🕐 5〜10分 · 3歳〜', mode:'pair' },
+      { name:'新聞紙運び（2人）',   icon:'📰', ic:'ic-orange', color:'card-yellow', tags:['協力','新聞紙'],    meta:'🕐 5〜10分 · 4歳〜', mode:'pair' },
+      { name:'リズム手合わせ',      icon:'👏', ic:'ic-purple', color:'card-purple', tags:['タイミング','道具なし'], meta:'🕐 5分 · 3歳〜', mode:'pair' },
+      { name:'肩組み歩き',          icon:'🤝', ic:'ic-blue',  color:'card-blue',   tags:['距離感','道具なし'], meta:'🕐 3〜5分 · 5歳〜', mode:'pair' },
+      { name:'背中に文字を書く',    icon:'✏️', ic:'ic-pink',  color:'card-pink',   tags:['触覚','道具なし'],  meta:'🕐 5〜10分 · 5歳〜', mode:'pair' },
+    ]
+  }
+};
+*/
+
+// URLパラメータからカテゴリを取得
+const params = new URLSearchParams(window.location.search);
+const catKey = params.get('cat') || 'sowasowa';
+const cat = CATEGORIES[catKey] || CATEGORIES.sowasowa;
+
+// ヘッダータイトル更新
+document.querySelector('.header-title').textContent = cat.name;
+
+// バナー更新
+document.querySelector('.banner-icon').textContent = cat.emoji;
+document.querySelector('.banner-name').textContent = cat.name;
+document.querySelector('.banner-count').textContent = `${cat.exercises.length}種類 · 道具なしから始められます`;
+document.querySelector('.category-banner').style.background = cat.gradient;
+
+// 運動リスト描画
+const modeLabel = { solo:'👤 ひとり', pair:'👫 ペア', both:'👤👫 どちらも' };
+const modeClass = { solo:'mode-solo', pair:'mode-pair', both:'mode-both' };
+const scrollArea = document.querySelector('.scroll-area');
+const modeChipsEl = document.getElementById('mode-chips');
+const toolChipsEl = document.getElementById('tool-chips');
+const resultInfo = document.getElementById('result-info');
+
+// フィルター状態
+let modeFilter = 'all';   // all | solo | pair | both
+let toolFilter = 'all';   // all | <tool name>
+
+// このカテゴリに含まれる道具を抽出（tags の2番目を道具と扱う）
+const tools = [...new Set(cat.exercises.map(e => e.tags[1]).filter(Boolean))];
+// 「道具なし」が先頭に来るよう並び替え
+tools.sort((a, b) => (a === '道具なし' ? -1 : b === '道具なし' ? 1 : 0));
+
+function matchMode(ex) {
+  if (modeFilter === 'all') return true;
+  if (modeFilter === 'solo') return ex.mode === 'solo' || ex.mode === 'both';
+  if (modeFilter === 'pair') return ex.mode === 'pair' || ex.mode === 'both';
+  return ex.mode === modeFilter;
+}
+function matchTool(ex) {
+  return toolFilter === 'all' || ex.tags.includes(toolFilter);
+}
+
+function renderChips() {
+  const modes = [
+    { k:'all',  label:'すべて' },
+    { k:'solo', label:'👤 ひとり' },
+    { k:'pair', label:'👫 ペア' },
+  ];
+  modeChipsEl.innerHTML = modes.map(m =>
+    `<div class="filter-chip${modeFilter===m.k?' active':''}" data-mode="${m.k}">${m.label}</div>`
+  ).join('');
+  modeChipsEl.querySelectorAll('.filter-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      modeFilter = c.getAttribute('data-mode');
+      renderChips(); renderList();
+    });
+  });
+
+  toolChipsEl.innerHTML =
+    `<div class="filter-chip${toolFilter==='all'?' active':''}" data-tool="all">すべて</div>` +
+    tools.map(t =>
+      `<div class="filter-chip${toolFilter===t?' active':''}" data-tool="${t}">${t}</div>`
+    ).join('');
+  toolChipsEl.querySelectorAll('.filter-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      toolFilter = c.getAttribute('data-tool');
+      renderChips(); renderList();
+    });
+  });
+}
+
+function renderList() {
+  const filtered = cat.exercises
+    .map((ex, i) => ({ ex, i }))
+    .filter(({ ex }) => matchMode(ex) && matchTool(ex));
+
+  resultInfo.textContent = filtered.length === cat.exercises.length
+    ? `全${cat.exercises.length}件`
+    : `${filtered.length}件 / 全${cat.exercises.length}件`;
+
+  if (filtered.length === 0) {
+    scrollArea.innerHTML = `
+      <div class="empty-list">
+        <div class="empty-list-emoji">🔍</div>
+        条件に合う運動が見つかりませんでした<br>フィルターを変えてみてください
+      </div>`;
+    return;
+  }
+
+  scrollArea.innerHTML = filtered.map(({ ex, i }) => {
+    const on = window.FAV && window.FAV.has(catKey, i);
+    return `
+    <div class="exercise-card ${ex.color}" data-idx="${i}">
+      <div class="ex-icon ${ex.ic}">${ex.icon}</div>
+      <div class="ex-body">
+        <div class="ex-top">
+          <div class="ex-name">${ex.name}</div>
+          <span class="mode-badge ${modeClass[ex.mode]}">${modeLabel[ex.mode]}</span>
+        </div>
+        <div class="ex-tags">
+          ${ex.tags.map(t => `<span class="ex-tag tg-teal">${t}</span>`).join('')}
+        </div>
+        <div class="ex-meta">${ex.meta}</div>
+      </div>
+      <div class="ex-right">
+        <div class="fav-btn${on ? ' active' : ''}" data-fav-idx="${i}">${on ? '❤️' : '🤍'}</div>
+        <div class="diff-stars">★☆☆</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  scrollArea.querySelectorAll('.exercise-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.fav-btn')) return;
+      const i = card.getAttribute('data-idx');
+      location.href = `detail.html?cat=${catKey}&idx=${i}`;
+    });
+  });
+  scrollArea.querySelectorAll('.fav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const i = parseInt(btn.getAttribute('data-fav-idx'), 10);
+      const nowOn = window.FAV.toggle(catKey, i);
+      btn.textContent = nowOn ? '❤️' : '🤍';
+      btn.classList.toggle('active', nowOn);
+    });
+  });
+}
+
+renderChips();
+renderList();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

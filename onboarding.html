@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOMAPO - オンボーディング</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #FFE8D6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    .phone-wrap {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .phone {
+      width: 393px;
+      height: 852px;
+      background: #FFF9F5;
+      border-radius: 52px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.14), 0 0 0 11px #fff, 0 0 0 13px #ddd;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .status-bar {
+      padding: 16px 32px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3a3a3a;
+      flex-shrink: 0;
+    }
+
+    /* ===== スプラッシュ画面 ===== */
+    .splash {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #43E97B 0%, #38F9D7 40%, #4FACFE 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .splash-circle1 {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+    }
+    .splash-circle2 {
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    .splash-circle3 {
+      position: absolute;
+      top: 40%; left: -30px;
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .splash-logo-wrap {
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    .splash-logo {
+      font-family: 'Nunito', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .splash-tagline1 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      margin-bottom: 4px;
+    }
+
+    .splash-tagline2 {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .splash-dots {
+      position: absolute;
+      bottom: 40px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.4);
+    }
+    .dot.active {
+      width: 24px;
+      background: #fff;
+    }
+
+    /* ===== オンボーディング1 ===== */
+    .onboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .onboard-skip {
+      padding: 12px 22px 0;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+      color: #A8B2BE;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .onboard-illust {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .illust-card {
+      width: 260px; height: 260px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .illust-card.g1 {
+      background: linear-gradient(135deg, #E0FBF0, #D0F5FF);
+    }
+    .illust-card.g2 {
+      background: linear-gradient(135deg, #FFF8DC, #FFE8C8);
+    }
+    .illust-card.g3 {
+      background: linear-gradient(135deg, #F5F0FF, #FFE8F5);
+    }
+
+    .illust-card::before {
+      content: '';
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+    }
+
+    .onboard-bottom {
+      padding: 0 28px 32px;
+      flex-shrink: 0;
+    }
+
+    .onboard-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .onboard-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .onboard-desc {
+      font-size: 14px;
+      color: #6B7A8D;
+      line-height: 1.7;
+      font-family: 'Noto Sans JP', sans-serif;
+      margin-bottom: 28px;
+    }
+
+    .next-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #43E97B 0%, #38F9D7 50%, #4FACFE 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 17px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(67,233,123,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* ===== プロフィール設定 ===== */
+    .profile-setup {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-header {
+      padding: 12px 22px 0;
+      flex-shrink: 0;
+    }
+
+    .profile-step {
+      font-size: 12px;
+      font-weight: 700;
+      color: #A8B2BE;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .profile-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #2D3436;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      line-height: 1.4;
+    }
+
+    .profile-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px 20px;
+    }
+    .profile-scroll::-webkit-scrollbar { display: none; }
+
+    .form-section { margin-bottom: 20px; }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid #E8EDF2;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      color: #2D3436;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .form-input:focus {
+      border-color: #43E97B;
+      box-shadow: 0 0 0 3px rgba(67,233,123,0.12);
+    }
+
+    /* 年齢選択 */
+    .age-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .age-chip {
+      background: #fff;
+      border: 1.5px solid #E8EDF2;
+      border-radius: 14px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+    }
+
+    .age-chip.active {
+      background: #E0FBF0;
+      border-color: rgba(67,233,123,0.4);
+      color: #1E8A55;
+    }
+
+    /* 性別選択 */
+    .gender-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .gender-chip {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid #E8EDF2;
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .gender-chip.active {
+      background: #E8F4FF;
+      border-color: rgba(79,172,254,0.4);
+      color: #1565C0;
+    }
+
+    .gender-emoji { font-size: 22px; }
+
+    /* 悩み選択 */
+    .worry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .worry-chip {
+      background: #fff;
+      border: 1.5px solid #E8EDF2;
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #6B7A8D;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+    }
+
+    .worry-chip.active {
+      background: #FFF8DC;
+      border-color: rgba(255,200,50,0.4);
+      color: #C8860A;
+    }
+
+    .worry-emoji { font-size: 18px; }
+
+    .profile-btn-wrap {
+      padding: 0 20px 28px;
+      flex-shrink: 0;
+    }
+
+    .start-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #43E97B 0%, #38F9D7 50%, #4FACFE 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 17px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(67,233,123,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-wrap">
+
+    <!-- 画面1：スプラッシュ -->
+    <div class="phone">
+      <div class="status-bar" style="color:#fff; position:absolute; top:0; left:0; right:0; z-index:10;">
+        <span>9:41</span>
+        <span>●●●</span>
+      </div>
+      <div class="splash">
+        <div class="splash-circle1"></div>
+        <div class="splash-circle2"></div>
+        <div class="splash-circle3"></div>
+        <div class="splash-content">
+          <div class="splash-logo-wrap">
+            <div class="splash-logo">S</div>
+          </div>
+          <div class="splash-tagline1">SOMAPO</div>
+          <div class="splash-tagline2">おうちで始める、感覚あそび</div>
+        </div>
+        <div class="splash-dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面2：オンボーディング -->
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●</span>
+      </div>
+      <div class="onboard">
+        <div class="onboard-skip">スキップ</div>
+        <div class="onboard-illust">
+          <div class="illust-card g1">🏃</div>
+        </div>
+        <div class="onboard-bottom">
+          <div class="onboard-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="onboard-title">お子さんの悩みから<br>運動を探せます</div>
+          <div class="onboard-desc">「そわそわ」「姿勢が悪い」など<br>気になることを選ぶだけで、<br>ぴったりの運動が見つかります。</div>
+          <button class="next-btn">次へ →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面3：オンボーディング2 -->
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●</span>
+      </div>
+      <div class="onboard">
+        <div class="onboard-skip">スキップ</div>
+        <div class="onboard-illust">
+          <div class="illust-card g2">🏠</div>
+        </div>
+        <div class="onboard-bottom">
+          <div class="onboard-dots">
+            <div class="dot"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="onboard-title">自宅でできる<br>かんたんな運動ばかり</div>
+          <div class="onboard-desc">道具なしや、タオル・クッションなど<br>家にあるものだけで<br>すぐに始められます。</div>
+          <button class="next-btn">次へ →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面4：オンボーディング3 -->
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●</span>
+      </div>
+      <div class="onboard">
+        <div class="onboard-skip">スキップ</div>
+        <div class="onboard-illust">
+          <div class="illust-card g3">🌟</div>
+        </div>
+        <div class="onboard-bottom">
+          <div class="onboard-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot active"></div>
+          </div>
+          <div class="onboard-title">続けるたびに<br>ぐんぐん育つ</div>
+          <div class="onboard-desc">きろく機能でがんばりを可視化。<br>バッジやストリークで<br>楽しく継続できます。</div>
+          <button class="next-btn">はじめる！ 🎉</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面5：プロフィール設定 -->
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●</span>
+      </div>
+      <div class="profile-setup">
+        <div class="profile-header">
+          <div class="profile-step">Step 1 / 1</div>
+          <div class="profile-title">お子さんのことを<br>教えてください</div>
+        </div>
+        <div class="profile-scroll">
+
+          <div class="form-section">
+            <div class="form-label">ニックネーム</div>
+            <input class="form-input" type="text" placeholder="例：たろうくん">
+          </div>
+
+          <div class="form-section">
+            <div class="form-label">年齢</div>
+            <div class="age-grid">
+              <div class="age-chip">1歳</div>
+              <div class="age-chip">2歳</div>
+              <div class="age-chip">3歳</div>
+              <div class="age-chip active">4歳</div>
+              <div class="age-chip">5歳</div>
+              <div class="age-chip">6歳</div>
+              <div class="age-chip">7歳</div>
+              <div class="age-chip">8歳〜</div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-label">性別（任意）</div>
+            <div class="gender-row">
+              <div class="gender-chip active">
+                <div class="gender-emoji">👦</div>
+                男の子
+              </div>
+              <div class="gender-chip">
+                <div class="gender-emoji">👧</div>
+                女の子
+              </div>
+              <div class="gender-chip">
+                <div class="gender-emoji">🧒</div>
+                どちらでも
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-label">気になること（複数選択可）</div>
+            <div class="worry-grid">
+              <div class="worry-chip active">
+                <div class="worry-emoji">🌀</div>
+                そわそわする
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">🧍</div>
+                姿勢が悪い
+              </div>
+              <div class="worry-chip active">
+                <div class="worry-emoji">⚖️</div>
+                バランスが苦手
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">🎯</div>
+                集中できない
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">✋</div>
+                手先が不器用
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">👐</div>
+                感覚過敏・鈍麻
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">💪</div>
+                体力が弱い
+              </div>
+              <div class="worry-chip">
+                <div class="worry-emoji">👂</div>
+                音・光に敏感
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="profile-btn-wrap">
+          <button class="start-btn">SOMAPOをはじめる！ 🌈</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

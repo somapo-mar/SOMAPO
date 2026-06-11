@@ -125,18 +125,18 @@ window.EXERCISE_SVGS = {
         <circle cx="28" cy="58" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
         <circle cx="38" cy="22" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
       </svg>`,
-  "カニ歩き": `<svg viewBox="0 0 64 80" class="anim-walk">
-        <circle cx="32" cy="22" r="7" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1.5"/>
-        <line x1="32" y1="29" x2="32" y2="48" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="34" x2="10" y2="44" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="34" x2="54" y2="44" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="10" cy="46" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <circle cx="54" cy="46" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <line x1="32" y1="48" x2="20" y2="64" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="48" x2="44" y2="64" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="20" cy="66" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <circle cx="44" cy="66" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <text x="4" y="78" font-size="9" fill="#FF6B9D" font-weight="700">← 横に移動</text>
+  "あんよでじゃんけん": `<svg viewBox="0 0 64 80" class="anim-bounce">
+        <circle cx="32" cy="16" r="7" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1.5"/>
+        <line x1="32" y1="23" x2="32" y2="46" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="30" x2="20" y2="42" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="30" x2="44" y2="42" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="20" cy="44" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
+        <circle cx="44" cy="44" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
+        <line x1="32" y1="46" x2="22" y2="64" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="46" x2="44" y2="62" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="20" cy="66" rx="5" ry="2.5" fill="#FF6B9D" stroke="#E8528A" stroke-width="1"/>
+        <ellipse cx="46" cy="64" rx="5" ry="2.5" fill="#43E97B" stroke="#2DBD61" stroke-width="1"/>
+        <text x="14" y="78" font-size="8" fill="#FF6B9D" font-weight="700">✊✌️🖐</text>
       </svg>`,
   "ブリッジ": `<svg viewBox="0 0 64 80" class="anim-stretch">
         <line x1="8" y1="68" x2="56" y2="68" stroke="#A8B2BE" stroke-width="1.5"/>
@@ -195,16 +195,17 @@ window.EXERCISE_SVGS = {
         <line x1="32" y1="35" x2="52" y2="35" stroke="#43E97B" stroke-width="1.5" stroke-dasharray="3,2"/>
         <line x1="32" y1="66" x2="52" y2="66" stroke="#43E97B" stroke-width="1.5" stroke-dasharray="3,2"/>
       </svg>`,
-  "タオルを背中に挟んで歩く": `<svg viewBox="0 0 64 80" class="anim-walk">
-        <circle cx="32" cy="12" r="7" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1.5"/>
-        <line x1="32" y1="19" x2="32" y2="44" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="26" x2="18" y2="36" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="26" x2="46" y2="36" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <rect x="28" y="28" width="8" height="14" rx="2" fill="#FF9F43" opacity="0.7" stroke="#FF9F43" stroke-width="1"/>
-        <circle cx="18" cy="38" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <circle cx="46" cy="38" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
-        <line x1="32" y1="44" x2="24" y2="62" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="32" y1="44" x2="40" y2="62" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+  "頭にタオルで散歩": `<svg viewBox="0 0 64 80" class="anim-walk">
+        <rect x="18" y="6" width="28" height="6" rx="2" fill="#FF9F43" opacity="0.8" stroke="#E8852E" stroke-width="1"/>
+        <circle cx="32" cy="20" r="7" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1.5"/>
+        <line x1="32" y1="27" x2="32" y2="50" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="34" x2="22" y2="46" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="34" x2="42" y2="46" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="22" cy="48" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
+        <circle cx="42" cy="48" r="3" fill="#FFD3A5" stroke="#E8A87C" stroke-width="1"/>
+        <line x1="32" y1="50" x2="24" y2="68" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="50" x2="40" y2="68" stroke="#2D3436" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="14" y="78" font-size="8" fill="#FF9F43" font-weight="700">そろり… 🚶</text>
       </svg>`,
   "うつ伏せで足バタバタ": `<svg viewBox="0 0 64 80" class="anim-roll">
         <line x1="8" y1="52" x2="56" y2="52" stroke="#E8EDF2" stroke-width="1.5"/>

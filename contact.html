@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お問い合わせ | SOMAPO</title>
+  <meta name="description" content="SOMAPO（ソマポ）へのお問い合わせ・ご感想・運動のリクエスト・取材依頼などはこちらから。">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#43E97B">
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Klee+One:wght@400;600&family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5637792976484626" crossorigin="anonymous"></script>
+  <script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: #FFF9F5;
+      color: #2D3436;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 30px 24px 80px;
+    }
+
+    /* ヘッダー */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #6B7A8D;
+      text-decoration: none;
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+    .back-link:hover { color: #2ab562; }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .page-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #43E97B22, #4FACFE22);
+      border: 1.5px solid #43E97B66;
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #2ab562;
+      margin-bottom: 12px;
+    }
+    .page-title {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .page-sub {
+      font-family: 'Klee One', sans-serif;
+      font-size: 14px;
+      color: #6B7A8D;
+      line-height: 1.7;
+    }
+
+    /* お問い合わせカード */
+    .contact-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+    .contact-intro {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #4A5563;
+      margin-bottom: 24px;
+    }
+    .contact-intro strong { color: #2ab562; }
+
+    /* メソッド選択 */
+    .method-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .method-card {
+      background: #FFF9F5;
+      border-radius: 18px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: #2D3436;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .method-card:hover {
+      border-color: #43E97B;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(67,233,123,0.15);
+    }
+    .method-emoji {
+      font-size: 32px;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #E0FBF0;
+      border-radius: 14px;
+      flex-shrink: 0;
+    }
+    .method-card.x-card .method-emoji { background: #E8F4FF; }
+    .method-card.ig-card .method-emoji { background: #FFE0F0; }
+    .method-card.form-card .method-emoji { background: #FFF8DC; }
+    .method-info { flex: 1; }
+    .method-name {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .method-desc {
+      font-size: 12px;
+      color: #6B7A8D;
+    }
+    .method-arrow {
+      font-size: 20px;
+      color: #A8B2BE;
+    }
+
+    /* フォーム */
+    .form-section {
+      margin-top: 12px;
+      padding-top: 28px;
+      border-top: 1.5px dashed #E8DDC5;
+    }
+    .form-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4A5563;
+      margin-bottom: 8px;
+    }
+    .form-label .required {
+      color: #FF6B6B;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #E8DDC5;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #FFF9F5;
+      color: #2D3436;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #43E97B;
+      background: #fff;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 140px;
+      font-family: inherit;
+    }
+    .form-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #43E97B, #4FACFE);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(67,233,123,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(67,233,123,0.4);
+    }
+
+    /* Google フォーム埋め込み */
+    .form-embed-wrap {
+      background: #FFF9F5;
+      border-radius: 14px;
+      border: 1.5px solid #E8DDC5;
+      overflow: hidden;
+      padding: 4px;
+    }
+    .form-embed-wrap iframe {
+      display: block;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    /* 注意書き */
+    .notes-card {
+      background: #FFF8DC;
+      border-radius: 18px;
+      padding: 20px 22px;
+      border: 1.5px solid #FFE6A0;
+      margin-bottom: 24px;
+    }
+    .notes-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #B07A00;
+      margin-bottom: 10px;
+    }
+    .notes-list {
+      font-size: 13px;
+      color: #6B5500;
+      line-height: 1.7;
+      padding-left: 20px;
+    }
+    .notes-list li {
+      margin-bottom: 4px;
+    }
+
+    /* よくある質問 */
+    .faq-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px 28px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .faq-card details {
+      border-bottom: 1px solid #F0F0F0;
+      padding: 14px 0;
+    }
+    .faq-card details:last-child {
+      border-bottom: none;
+    }
+    .faq-card summary {
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      color: #2D3436;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .faq-card summary::-webkit-details-marker { display: none; }
+    .faq-card summary::after {
+      content: '＋';
+      color: #A8B2BE;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .faq-card details[open] summary::after {
+      content: '−';
+      color: #43E97B;
+    }
+    .faq-body {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #4A5563;
+      line-height: 1.8;
+      padding-left: 4px;
+    }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 12px;
+      color: #A8B2BE;
+      border-top: 1px solid #F0F0F0;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 480px) {
+      .page-title { font-size: 26px; }
+      .contact-card, .faq-card { padding: 24px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <a href="/" class="back-link">← トップへ戻る</a>
+
+    <div class="page-header">
+      <span class="page-tag">📧 お問い合わせ</span>
+      <h1 class="page-title">お気軽にどうぞ🌱</h1>
+      <p class="page-sub">
+        ご感想・運動のリクエスト・取材依頼など<br>
+        お気軽にお寄せください
+      </p>
+    </div>
+
+    <!-- 注意書き -->
+    <div class="notes-card">
+      <div class="notes-title">⚠️ お問い合わせ前にご確認ください</div>
+      <ul class="notes-list">
+        <li><strong>個別のお子さんに関する医療相談・診断にはお応えできません</strong></li>
+        <li>専門的な相談は、かかりつけ医や発達支援センターへ</li>
+        <li>SOMAPOの運動はあくまで「ご家庭での遊び」のご紹介です</li>
+        <li>返信までお時間いただく場合があります（個人運営のため）</li>
+      </ul>
+    </div>
+
+    <!-- お問い合わせ方法 -->
+    <div class="contact-card">
+      <p class="contact-intro">
+        SOMAPOは<strong>2児の男の子ママが個人で運営</strong>しています🌱<br>
+        お問い合わせは下記いずれかでお気軽にどうぞ。
+      </p>
+
+      <div class="method-cards">
+        <a href="https://www.instagram.com/somapo_official" target="_blank" rel="noopener" class="method-card ig-card">
+          <div class="method-emoji">📸</div>
+          <div class="method-info">
+            <div class="method-name">Instagram DM</div>
+            <div class="method-desc">@somapo_official へDM</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+
+        <a href="https://x.com/kotori_2boys_mom" target="_blank" rel="noopener" class="method-card x-card">
+          <div class="method-emoji">🐣</div>
+          <div class="method-info">
+            <div class="method-name">X（旧Twitter）DM</div>
+            <div class="method-desc">@kotori_2boys_mom へDM</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+
+      </div>
+
+      <!-- Googleフォーム -->
+      <div class="form-section">
+        <div class="form-title">📝 お問い合わせフォーム</div>
+        <p style="font-size:13px;color:#6B7A8D;margin-bottom:16px;line-height:1.7;">
+          下のフォームから直接送信できます🌱<br>
+          表示に少し時間がかかる場合があります。
+        </p>
+
+        <div class="form-embed-wrap">
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSet6dgNGS8vr31qgbw-93UDxY5yHpLoyhIpyxdv46P2L5er6A/viewform?embedded=true"
+            width="100%" height="1100" frameborder="0" marginheight="0" marginwidth="0"
+            loading="lazy"
+            title="SOMAPOへのお問い合わせフォーム">
+            読み込んでいます…
+          </iframe>
+        </div>
+
+        <p style="font-size:11px;color:#A8B2BE;margin-top:12px;text-align:center;line-height:1.6;">
+          ※ フォームが表示されない場合は<br>
+          <a href="https://forms.gle/cXE5x9pvmDs7V7N39" target="_blank" rel="noopener" style="color:#43E97B;font-weight:700;">こちらから直接開く</a>こともできます
+        </p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-card">
+      <div style="text-align:center;margin-bottom:18px;">
+        <span class="page-tag">❓ よくある質問</span>
+      </div>
+
+      <details>
+        <summary>SOMAPOは無料ですか？</summary>
+        <div class="faq-body">
+          はい、すべての運動・コンテンツを完全無料でご覧いただけます。登録も不要です。<br>
+          サイト運営費補助のため、控えめな広告を表示することがあります。
+        </div>
+      </details>
+
+      <details>
+        <summary>運動はどんな年齢の子向けですか？</summary>
+        <div class="faq-body">
+          目安として2〜10歳ほどのお子さんを想定していますが、発達のペースに合わせてご活用ください。<br>
+          各運動ページに目安年齢を記載しています。
+        </div>
+      </details>
+
+      <details>
+        <summary>発達凸凹じゃない子も使えますか？</summary>
+        <div class="faq-body">
+          もちろん大歓迎です🌱<br>
+          SOMAPOは「子どもの発達を応援したい全ての親子」のためのサイトです。
+        </div>
+      </details>
+
+      <details>
+        <summary>医療相談はできますか？</summary>
+        <div class="faq-body">
+          個別のお子さんに関する医療的な相談やアドバイスにはお応えできません。<br>
+          かかりつけ医や発達支援センター、療育機関にご相談ください。
+        </div>
+      </details>
+
+      <details>
+        <summary>運動を取り入れる頻度は？</summary>
+        <div class="faq-body">
+          まずは「1日5分」「気が向いた時だけ」でOKです。<br>
+          無理せず、お子さんが楽しめる範囲で続けることが一番大切です🌷
+        </div>
+      </details>
+
+      <details>
+        <summary>取材・コラボの依頼はできますか？</summary>
+        <div class="faq-body">
+          可能な範囲でお応えしています。<br>
+          上記フォームまたは hello.somapo@gmail.com までお気軽にご相談ください。
+        </div>
+      </details>
+    </div>
+
+  </div>
+
+  <footer>
+    <a href="/" style="color:#43E97B;text-decoration:none;font-weight:700;">← SOMAPOトップに戻る</a><br>
+    © 2026 SOMAPO - 親子で育つ、おうち遊び
+  </footer>
+
+  <script>
+    function sendMail(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const topic = document.getElementById('topic').value;
+      const message = document.getElementById('message').value;
+      const subject = encodeURIComponent('[SOMAPO] ' + topic + ' - ' + name + 'さんより');
+      const body = encodeURIComponent(
+        'お名前：' + name + '\n' +
+        'お問い合わせ種類：' + topic + '\n\n' +
+        '【お問い合わせ内容】\n' + message + '\n\n' +
+        '---\n' +
+        'このメールはSOMAPOお問い合わせフォームから送信されました\n' +
+        'https://somapo.vercel.app/contact.html'
+      );
+      window.location.href = 'mailto:hello.somapo@gmail.com?subject=' + subject + '&body=' + body;
+      return false;
+    }
+  </script>
+
+</body>
+</html>

@@ -82,6 +82,133 @@
       box-shadow: 0 6px 16px rgba(67,233,123,0.45);
     }
 
+    /* ===== ハンバーガーメニュー ===== */
+    .hamburger {
+      background: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      background: #2D3436;
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* ===== ナビゲーションオーバーレイ ===== */
+    .nav-overlay {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(180deg, #FFF9F5, #FFF1E5);
+      box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+      z-index: 200;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      padding: 70px 30px 40px;
+      overflow-y: auto;
+    }
+    .nav-overlay.open {
+      transform: translateX(0);
+    }
+    .nav-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none;
+      border: none;
+      font-size: 32px;
+      cursor: pointer;
+      color: #2D3436;
+      width: 44px; height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+    .nav-close:hover {
+      background: rgba(0,0,0,0.06);
+    }
+    .nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-item {
+      padding: 16px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+      text-decoration: none;
+      border-radius: 14px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-item:hover {
+      background: rgba(67,233,123,0.1);
+      transform: translateX(4px);
+    }
+    .nav-footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #E8DDC5;
+      text-align: center;
+    }
+    .nav-tag {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 13px;
+      color: #6B7A8D;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .nav-sns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+      color: #6B7A8D;
+    }
+    .nav-sns a {
+      color: #43E97B;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .nav-sns a:hover {
+      text-decoration: underline;
+    }
+    .nav-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .nav-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* ===== ヒーロー ===== */
     .hero {
       background: linear-gradient(145deg, #43E97B 0%, #38F9D7 40%, #4FACFE 100%);
@@ -309,6 +436,112 @@
     .step-body { padding-top: 8px; }
     .step-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
     .step-desc { font-size: 13px; color: #6B7A8D; line-height: 1.7; }
+
+    /* ===== モード選択（NEW） ===== */
+    .mode-section {
+      padding: 50px 24px 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .mode-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0 12px;
+      margin-bottom: 30px;
+    }
+    .mode-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 26px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 2px solid transparent;
+      text-decoration: none;
+      color: #2D3436;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .mode-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+    }
+    .mode-card.mode-ugoku {
+      border-color: #43E97B;
+      background: linear-gradient(135deg, #fff, #E0FBF0);
+    }
+    .mode-card.mode-tsukuru {
+      background: linear-gradient(135deg, #fff, #FFF1E5);
+      border-color: #FFCBB1;
+    }
+    .mode-emoji {
+      font-size: 50px;
+      width: 76px;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #E0FBF0;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .mode-card.mode-tsukuru .mode-emoji {
+      background: #FFE8DC;
+    }
+    .mode-info { flex: 1; }
+    .mode-name {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 4px;
+      color: #2ab562;
+    }
+    .mode-card.mode-tsukuru .mode-name {
+      color: #C77B3D;
+    }
+    .mode-count {
+      font-size: 13px;
+      color: #6B7A8D;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .mode-tags {
+      font-size: 11px;
+      color: #A8B2BE;
+    }
+    .mode-arrow {
+      font-size: 22px;
+      color: #43E97B;
+      font-weight: 900;
+    }
+    .mode-card.mode-tsukuru .mode-arrow {
+      color: #C77B3D;
+    }
+    .coming-soon-banner {
+      background: #FFF8DC;
+      margin: 0 12px;
+      border-radius: 18px;
+      padding: 18px 22px;
+      border: 1.5px dashed #FFD96F;
+    }
+    .cs-label {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 13px;
+      color: #B07A00;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .cs-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #C77B3D;
+    }
+    .cs-desc {
+      font-size: 12px;
+      color: #6B7A8D;
+      line-height: 1.6;
+    }
 
     /* ===== カテゴリ ===== */
     .categories {
@@ -743,8 +976,36 @@
 
   <!-- ヘッダー -->
   <header class="site-header">
-    <div class="header-logo">SOMAPO</div>
+    <a href="/" class="header-logo">SOMAPO</a>
+    <button class="hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
   </header>
+
+  <!-- ナビゲーションバックドロップ -->
+  <div class="nav-backdrop" id="navBackdrop"></div>
+
+  <!-- ナビゲーションオーバーレイ -->
+  <nav class="nav-overlay" id="navOverlay">
+    <button class="nav-close" id="navClose" aria-label="閉じる">×</button>
+    <div class="nav-inner">
+      <a href="/" class="nav-item">🏠 ホーム</a>
+      <a href="/exercises.html" class="nav-item">🏃 全100種を見る</a>
+      <a href="/favorite.html" class="nav-item">⭐ お気に入り</a>
+      <a href="#categories" class="nav-item" data-close="true">🔍 9つのお悩みから探す</a>
+      <a href="#info" class="nav-item" data-close="true">ℹ️ サイトについて</a>
+      <a href="#safety" class="nav-item" data-close="true">⚠️ 安全への注意</a>
+      <a href="/contact.html" class="nav-item">📧 お問い合わせ</a>
+      <div class="nav-footer">
+        <div class="nav-tag">🌱 親子で育つ、おうち遊び</div>
+        <div class="nav-sns">
+          <a href="https://www.instagram.com/somapo_official" target="_blank" rel="noopener">Instagram</a>
+          <span>·</span>
+          <a href="https://x.com/kotori_2boys_mom" target="_blank" rel="noopener">X</a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <!-- ヒーロー -->
   <div class="hero">
@@ -765,6 +1026,43 @@
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#FFF9F5"/>
       </svg>
+    </div>
+  </div>
+
+  <!-- モード選択（NEW） -->
+  <div class="mode-section fade-in">
+    <div style="text-align:center; margin-bottom:28px;">
+      <div class="sec-label">✨ 今日はどっちで遊ぶ？</div>
+      <div class="sec-title">2つから選べる</div>
+      <div class="sec-sub" style="margin-top:8px;">気分や状況に合わせて使い分け🌱</div>
+    </div>
+
+    <div class="mode-cards">
+      <a href="#categories" class="mode-card mode-ugoku">
+        <div class="mode-emoji">🏃</div>
+        <div class="mode-info">
+          <div class="mode-name">うごく</div>
+          <div class="mode-count">100種類</div>
+          <div class="mode-tags">感覚あそび・体幹・バランス</div>
+        </div>
+        <div class="mode-arrow">→</div>
+      </a>
+
+      <a href="#categories" class="mode-card mode-tsukuru">
+        <div class="mode-emoji">🧩</div>
+        <div class="mode-info">
+          <div class="mode-name">つくる・かんがえる</div>
+          <div class="mode-count">COMING SOON ✨</div>
+          <div class="mode-tags">折り紙・なぞなぞ・お絵かき</div>
+        </div>
+        <div class="mode-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="coming-soon-banner">
+      <div class="cs-label">🆕 新コーナー準備中</div>
+      <div class="cs-title">つくる・かんがえる</div>
+      <div class="cs-desc">「指先・思考・集中」を遊びで楽しく育てるコーナーが近日公開！おでかけ先・移動中でも使えます。</div>
     </div>
   </div>
 
@@ -877,7 +1175,7 @@
   </div>
 
   <!-- カテゴリ -->
-  <div class="categories fade-in">
+  <div class="categories fade-in" id="categories">
     <div style="text-align:center; margin-bottom:28px;">
       <div class="sec-label">🔍 悩みから探す</div>
       <div class="sec-title">どんなお悩みですか？</div>
@@ -957,39 +1255,6 @@
       </div>
       <div class="all-list-arrow">→</div>
     </a>
-  </div>
-
-  <!-- 保護者の声 -->
-  <div class="voices fade-in">
-    <div class="voices-inner">
-      <div style="text-align:center; margin-bottom:32px;">
-        <div class="sec-label">💬 保護者の声</div>
-        <div class="sec-title">使っている方からのお声</div>
-      </div>
-      <div class="voice-grid">
-        <div class="voice-card">
-          <div class="voice-text">悩みから運動が探せるのが本当に助かります。「今日はそわそわしてるな」と思ったらすぐ開けるのがいい。</div>
-          <div class="voice-author">
-            <span class="voice-stars">★★★★★</span>
-            30代・男の子のお母さん
-          </div>
-        </div>
-        <div class="voice-card">
-          <div class="voice-text">スティックマンのアニメーションで子どもが自分でやり方を見て、楽しそうに取り組んでいます！</div>
-          <div class="voice-author">
-            <span class="voice-stars">★★★★★</span>
-            40代・女の子のお父さん
-          </div>
-        </div>
-        <div class="voice-card">
-          <div class="voice-text">道具なしでできる運動から始められて、敷居が低くて続けやすいです。記録機能もモチベになってます。</div>
-          <div class="voice-author">
-            <span class="voice-stars">★★★★★</span>
-            30代・双子のお母さん
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- SNSシェア -->
@@ -1126,6 +1391,26 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ナビゲーションメニュー
+    const hamburger = document.getElementById('hamburger');
+    const navOverlay = document.getElementById('navOverlay');
+    const navBackdrop = document.getElementById('navBackdrop');
+    const navClose = document.getElementById('navClose');
+    function toggleNav(open) {
+      if (open === undefined) open = !navOverlay.classList.contains('open');
+      hamburger.classList.toggle('open', open);
+      navOverlay.classList.toggle('open', open);
+      navBackdrop.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    hamburger.addEventListener('click', () => toggleNav());
+    navClose.addEventListener('click', () => toggleNav(false));
+    navBackdrop.addEventListener('click', () => toggleNav(false));
+    // アンカーリンクのみ閉じる、別ページ遷移はそのまま
+    document.querySelectorAll('.nav-item[data-close]').forEach(item => {
+      item.addEventListener('click', () => toggleNav(false));
+    });
   </script>
 </body>
 </html>

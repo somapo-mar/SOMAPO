@@ -22,13 +22,13 @@ window.CATEGORIES = {
     gradient: 'linear-gradient(135deg,#FF6B9D,#FF8E53)',
     exercises: [
       { name:'クマ歩き',         icon:'🐻', ic:'ic-teal',  color:'card-teal',   tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
-      { name:'カニ歩き',         icon:'🦀', ic:'ic-pink',  color:'card-pink',   tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
+      { name:'あんよでじゃんけん', icon:'🦶', ic:'ic-pink',  color:'card-pink',   tags:['協調運動','道具なし'], meta:'🕐 3〜5分 · 3歳〜', mode:'both' },
       { name:'ブリッジ',         icon:'🌉', ic:'ic-yellow', color:'card-yellow', tags:['体幹','道具なし'],  meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
       { name:'飛行機ポーズ',     icon:'✈️', ic:'ic-blue',  color:'card-blue',   tags:['バランス','道具なし'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
       { name:'ボールうつ伏せ',   icon:'🟡', ic:'ic-yellow', color:'card-yellow', tags:['体幹','バランスボール'], meta:'🕐 5〜10分 · 4歳〜', mode:'solo' },
       { name:'本を頭に乗せて歩く', icon:'📚', ic:'ic-blue', color:'card-blue',  tags:['姿勢','本'],        meta:'🕐 3〜5分 · 5歳〜', mode:'solo' },
       { name:'壁に背をつけて立つ', icon:'🧱', ic:'ic-teal', color:'card-teal',  tags:['姿勢','道具なし'],  meta:'🕐 1〜2分 · 3歳〜', mode:'solo' },
-      { name:'タオルを背中に挟んで歩く', icon:'🧺', ic:'ic-orange', color:'card-yellow', tags:['姿勢','タオル'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
+      { name:'頭にタオルで散歩', icon:'🧺', ic:'ic-orange', color:'card-yellow', tags:['姿勢','タオル'], meta:'🕐 3〜5分 · 4歳〜', mode:'solo' },
       { name:'うつ伏せで足バタバタ', icon:'🦵', ic:'ic-green', color:'card-teal', tags:['背筋','道具なし'],  meta:'🕐 3〜5分 · 3歳〜', mode:'solo' },
       { name:'タオルの綱引き',   icon:'🪢', ic:'ic-pink',  color:'card-pink',   tags:['体幹','タオル'],    meta:'🕐 3〜5分 · 4歳〜', mode:'pair' },
     ]

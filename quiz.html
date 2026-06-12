@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お話しクイズ | SOMAPO</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  background: #FFF9F5;
+  color: #2D3436;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ── ヘッダー ── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,249,245,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #FFE8DC;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.back-btn {
+  background: #FFE8DC;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C77B3D;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.back-btn:hover { background: #FFCBB1; }
+.header-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #C77B3D;
+  flex: 1;
+}
+.score-chip {
+  background: #FFF1E5;
+  border: 1.5px solid #FFCBB1;
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #C77B3D;
+  white-space: nowrap;
+  display: none;
+}
+
+/* ── 共通レイアウト ── */
+.screen { display: none; max-width: 520px; margin: 0 auto; padding: 0 20px; }
+.screen.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.screen.active { animation: fadeUp 0.25s ease; }
+
+/* ── レベル選択 ── */
+.level-hero {
+  text-align: center;
+  padding: 36px 0 28px;
+}
+.level-hero-emoji { font-size: 60px; line-height: 1; margin-bottom: 14px; }
+.level-hero h1 {
+  font-size: 24px;
+  font-weight: 900;
+  color: #C77B3D;
+  margin-bottom: 8px;
+}
+.level-hero p {
+  font-size: 14px;
+  color: #A8B2BE;
+  line-height: 1.7;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #C77B3D;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.level-card {
+  background: #fff;
+  border-radius: 22px;
+  border: 2px solid #FFCBB1;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+.level-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+.level-card:active { transform: scale(0.98); }
+.level-card.lv1 { border-color: #b8e6b8; background: linear-gradient(135deg,#fff,#f0fff4); }
+.level-card.lv2 { border-color: #ffe0a0; background: linear-gradient(135deg,#fff,#fffbf0); }
+.level-card.lv3 { border-color: #ffb8c8; background: linear-gradient(135deg,#fff,#fff5f7); }
+
+.level-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  flex-shrink: 0;
+}
+.lv1 .level-icon-wrap { background: #e0fff0; }
+.lv2 .level-icon-wrap { background: #fff8e0; }
+.lv3 .level-icon-wrap { background: #ffe0e8; }
+
+.level-info { flex: 1; }
+.level-stars { font-size: 18px; margin-bottom: 4px; }
+.level-name { font-size: 16px; font-weight: 900; color: #2D3436; margin-bottom: 4px; }
+.level-desc { font-size: 12px; color: #A8B2BE; line-height: 1.5; }
+.level-arrow { font-size: 22px; color: #ddd; }
+
+.tip-box {
+  background: #FFF8DC;
+  border: 1.5px dashed #FFD96F;
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9B7A00;
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* ── クイズ画面 ── */
+.quiz-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0 8px;
+  font-size: 12px;
+  color: #A8B2BE;
+  font-weight: 700;
+}
+.progress-bar {
+  background: #FFE8DC;
+  border-radius: 99px;
+  height: 7px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f5a623, #C77B3D);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.card {
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.card-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.story-card {
+  background: #FFFEF0;
+  border: 2px solid #F5E5B0;
+}
+.story-card .card-label { color: #C8900A; }
+.story-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #3D2C00;
+  line-height: 1.9;
+}
+
+.question-card {
+  background: #F0F8FF;
+  border: 2px solid #B8D8F0;
+}
+.question-card .card-label { color: #1A6FA0; }
+.question-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1A3D5C;
+  line-height: 1.8;
+}
+
+.child-prompt {
+  background: #FFFBF0;
+  border: 1.5px dashed #F5C860;
+  border-radius: 14px;
+  padding: 13px 18px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.child-prompt p:first-child {
+  font-size: 13px;
+  font-weight: 800;
+  color: #9B7A00;
+  margin-bottom: 4px;
+}
+.child-prompt p:last-child { font-size: 11px; color: #B09050; }
+
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.12s, box-shadow 0.12s;
+  display: block;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: linear-gradient(135deg, #f5a623, #C77B3D);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(199,123,61,0.35);
+  margin-bottom: 10px;
+}
+.btn-again {
+  background: #FFE8DC;
+  color: #C77B3D;
+  font-size: 13px;
+  padding: 11px;
+}
+
+/* ── 答え表示 ── */
+.answer-reveal {
+  background: #E8F7E8;
+  border: 2.5px solid #7DC87D;
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+@keyframes popIn {
+  from { transform: scale(0.88); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.answer-reveal { animation: popIn 0.28s cubic-bezier(.34,1.56,.64,1); }
+.answer-reveal .card-label { color: #2D7A2D; font-size: 11px; font-weight: 800; }
+.answer-text {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1A5C1A;
+}
+
+.judge-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #A07840;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.judge-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.btn-correct {
+  background: #4CAF7D;
+  color: #fff;
+  border-radius: 16px;
+  padding: 15px 8px;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.12s;
+}
+.btn-wrong {
+  background: #FF7043;
+  color: #fff;
+  border-radius: 16px;
+  padding: 15px 8px;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.12s;
+}
+.btn-correct:active, .btn-wrong:active { transform: scale(0.96); }
+
+.parent-note {
+  background: #FFF9F0;
+  border-left: 4px solid #FFCBB1;
+  border-radius: 0 12px 12px 0;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #9B7060;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+/* ── 結果画面 ── */
+.result-wrap {
+  text-align: center;
+  padding: 40px 0 20px;
+}
+.result-emoji { font-size: 72px; line-height: 1; margin-bottom: 16px; }
+.result-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #C77B3D;
+  margin-bottom: 8px;
+}
+.result-sub {
+  font-size: 14px;
+  color: #A8B2BE;
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.score-card {
+  background: #fff;
+  border: 2px solid #FFCBB1;
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+.score-num {
+  font-size: 56px;
+  font-weight: 900;
+  color: #f5a623;
+  line-height: 1;
+}
+.score-denom { font-size: 24px; color: #C8900A; }
+.score-label { font-size: 13px; color: #A8B2BE; margin-top: 6px; font-weight: 700; }
+
+.breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.breakdown-card {
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+}
+.bd-correct { background: #E8F7E8; border: 1.5px solid #7DC87D; }
+.bd-wrong   { background: #FFF0EC; border: 1.5px solid #FF9070; }
+.bd-num { font-size: 28px; font-weight: 900; }
+.bd-correct .bd-num { color: #2D7A2D; }
+.bd-wrong   .bd-num { color: #C0391A; }
+.bd-label { font-size: 12px; color: #A8B2BE; font-weight: 700; margin-top: 4px; }
+
+.result-stars { font-size: 32px; margin-bottom: 20px; letter-spacing: 4px; }
+
+.btn-next-level {
+  background: linear-gradient(135deg, #f5a623, #C77B3D);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(199,123,61,0.35);
+  margin-bottom: 12px;
+}
+.btn-retry {
+  background: #FFE8DC;
+  color: #C77B3D;
+  font-size: 13px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.btn-home {
+  background: #F0EEE8;
+  color: #6B7A8D;
+  font-size: 13px;
+  padding: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header">
+  <button class="back-btn" id="backBtn" aria-label="戻る">‹</button>
+  <div class="header-title" id="headerTitle">📖 お話しクイズ</div>
+  <div class="score-chip" id="scoreChip">⭕ 0 / 0もん</div>
+</div>
+
+<!-- ① レベル選択 -->
+<div class="screen active" id="screenLevel">
+  <div class="level-hero">
+    <div class="level-hero-emoji">📖</div>
+    <h1>お話しクイズ</h1>
+    <p>おはなしをよく聞いて<br>こたえてみよう！</p>
+  </div>
+
+  <div class="section-label">レベルをえらんでね</div>
+
+  <div class="level-card lv1" onclick="startQuiz(1)">
+    <div class="level-icon-wrap">🌱</div>
+    <div class="level-info">
+      <div class="level-stars">🌟</div>
+      <div class="level-name">かんたん</div>
+      <div class="level-desc">2つのことをくらべるよ・全10問</div>
+    </div>
+    <div class="level-arrow">›</div>
+  </div>
+
+  <div class="level-card lv2" onclick="startQuiz(2)">
+    <div class="level-icon-wrap">🌼</div>
+    <div class="level-info">
+      <div class="level-stars">🌟🌟</div>
+      <div class="level-name">すこし挑戦</div>
+      <div class="level-desc">3つのことをおぼえるよ・全10問</div>
+    </div>
+    <div class="level-arrow">›</div>
+  </div>
+
+  <div class="level-card lv3" onclick="startQuiz(3)">
+    <div class="level-icon-wrap">🌸</div>
+    <div class="level-info">
+      <div class="level-stars">🌟🌟🌟</div>
+      <div class="level-name">あたまのたいそう</div>
+      <div class="level-desc">かんがえる力をきたえるよ・全10問</div>
+    </div>
+    <div class="level-arrow">›</div>
+  </div>
+
+  <div class="tip-box">
+    💡 親御さんがおはなしを読み上げて、<br>お子さんに口頭で答えてもらいましょう！
+  </div>
+</div>
+
+<!-- ② クイズ -->
+<div class="screen" id="screenQuiz">
+  <div class="quiz-meta">
+    <span id="qCount">1 / 10もん</span>
+    <span id="levelLabel">🌟 かんたん</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:10%"></div>
+  </div>
+
+  <!-- 問題表示 -->
+  <div id="phaseQuestion">
+    <div class="card story-card">
+      <div class="card-label">📖 おはなし</div>
+      <div class="story-text" id="storyText"></div>
+    </div>
+    <div class="card question-card">
+      <div class="card-label">❓ もんだい</div>
+      <div class="question-text" id="questionText"></div>
+    </div>
+    <div class="child-prompt">
+      <p>👦 お子さんに答えてもらおう</p>
+      <p>答えが出たら下のボタンをタップ</p>
+    </div>
+    <button class="btn btn-primary" onclick="showAnswer()">こたえをみる 👀</button>
+    <button class="btn btn-again" onclick="readAgain()">もういちど よむ 🔁</button>
+  </div>
+
+  <!-- 答え表示 -->
+  <div id="phaseAnswer" style="display:none">
+    <div class="card story-card">
+      <div class="card-label">📖 おはなし</div>
+      <div class="story-text" id="storyText2"></div>
+    </div>
+    <div class="card question-card">
+      <div class="card-label">❓ もんだい</div>
+      <div class="question-text" id="questionText2"></div>
+    </div>
+    <div class="answer-reveal">
+      <div class="card-label">⭐ せいかい</div>
+      <div class="answer-text" id="answerText"></div>
+    </div>
+    <div class="judge-hint">👨‍👩‍👧 お子さんの答えはあってたかな？<br>親御さんがタップしてね</div>
+    <div class="judge-row">
+      <button class="btn-correct" onclick="judge(true)">⭕ あってた！</button>
+      <button class="btn-wrong" onclick="judge(false)">❌ ちがったね</button>
+    </div>
+    <div class="parent-note">
+      💬 「なぜそう思ったの？」と聞いてみると、聴く力がさらに育ちます
+    </div>
+  </div>
+</div>
+
+<!-- ③ 結果 -->
+<div class="screen" id="screenResult">
+  <div class="result-wrap">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-title" id="resultTitle">すごい！</div>
+    <div class="result-sub" id="resultSub"></div>
+    <div class="score-card">
+      <div>
+        <span class="score-num" id="resultNum">0</span>
+        <span class="score-denom" id="resultDenom"> / 10</span>
+      </div>
+      <div class="score-label">もん せいかい</div>
+    </div>
+    <div class="result-stars" id="resultStars">⭐⭐⭐</div>
+    <div class="breakdown">
+      <div class="breakdown-card bd-correct">
+        <div class="bd-num" id="bdCorrect">0</div>
+        <div class="bd-label">⭕ あってた</div>
+      </div>
+      <div class="breakdown-card bd-wrong">
+        <div class="bd-num" id="bdWrong">0</div>
+        <div class="bd-label">❌ ちがった</div>
+      </div>
+    </div>
+    <button class="btn btn-next-level" id="nextLevelBtn" onclick="goNextLevel()" style="display:none"></button>
+    <button class="btn btn-retry" onclick="retryLevel()">もういちど やる 🔄</button>
+    <button class="btn btn-home" onclick="goHome()">レベル選択にもどる 🏠</button>
+  </div>
+</div>
+
+<script>
+const QUIZDATA = {
+  1: [
+    { story:'うさぎさんが、みどりの おうちに はいりました。くまさんは、あかい おうちに はいりました。', q:'みどりの おうちに はいったのは、だれかな？', a:'うさぎさん' },
+    { story:'ねこちゃんが、あまい りんごを ぱくり。わんちゃんは、きいろい バナナを もぐもぐ たべました。', q:'バナナを たべたのは、だれかな？', a:'わんちゃん' },
+    { story:'パトカーが、ピーポー ピーポーと おとを たてて はしっていきました。しょうぼうしゃは、ウーウー おとを たてて はしっていきました。', q:'ピーポー ピーポーと おとを たてて はしったのは、どっちかな？', a:'パトカー' },
+    { story:'さるくんが、まるい ボールを もっています。ぞうさんは、ながい なわとびを もっています。', q:'まるい ボールを もっているのは、だれかな？', a:'さるくん' },
+    { story:'ねずみくんが、あお色の ふうせんを もっています。りすさんは、きいろの ふうせんを もっています。', q:'ねずみくんの ふうせんは、なにいろかな？', a:'あお色' },
+    { story:'たぬきくんが、大きな きの うしろに かくれました。きつねさんは、お花の うしろに かくれました。', q:'きの うしろに かくれたのは、だれかな？', a:'たぬきくん' },
+    { story:'ぺんぎんくんが、ピアノを ポロンポロン ひきました。らっこちゃんは、たいこを トントントンと たたきました。', q:'トントントンと たいこを たたいたのは、だれかな？', a:'らっこちゃん' },
+    { story:'とりが、おそらを スイスイ とびました。ちょうちょは、お花の まわりを ひらひら とびました。', q:'おそらを スイスイ とんだのは、どっちかな？', a:'とり' },
+    { story:'パンダくんが、きいろい シャツを 着ました。コアラくんは、みどりの ズボンを はきました。', q:'みどりの ズボンを はいたのは、だれかな？', a:'コアラくん' },
+    { story:'ライオンくんが、おおきい プレゼントを もらいました。チーターくんは、ちいさい プレゼントを もらいました。', q:'おおきい プレゼントを もらったのは、だれかな？', a:'ライオンくん' },
+  ],
+  2: [
+    { story:'うさぎさんは メロン、くまさんは イチゴ、きつねさんは みかんを 食べました。', q:'イチゴを 食べたのは、だれかな？', a:'くまさん' },
+    { story:'ねこちゃんが、ちいさくて 赤い おもちゃで 遊んでいます。わんちゃんは、おおきくて 青い おもちゃで 遊んでいます。', q:'おおきくて 青い おもちゃで 遊んでいるのは、どっちかな？', a:'わんちゃん' },
+    { story:'じてんしゃが チリンチリン、バイクが ブンブン、ひこうきが ゴーゴーと 音をたてました。', q:'ブンブンと 音をたてたのは、なーんだ？', a:'バイク' },
+    { story:'ライオンくんが、すべり台で 遊んだあとに、ブランコで 遊びました。', q:'ライオンくんが、さいしょに（1番目に）遊んだのは、どっちかな？', a:'すべり台' },
+    { story:'さるくんが 黄色いぼうし、ぞうさんが 青いぼうし、ペンギンくんが 赤いぼうしを かぶっています。', q:'黄色いぼうしを かぶっているのは、だれかな？', a:'さるくん' },
+    { story:'パンダくんは、にんじんが 苦手です。コアラくんは、ピーマンが 苦手です。', q:'ピーマンが 苦手なのは、だれかな？', a:'コアラくん' },
+    { story:'ねずみくんは 机の下、りすさんは カーテンの後ろ、たぬきくんは ドアの横に かくれました。', q:'カーテンの後ろに かくれたのは、だれかな？', a:'りすさん' },
+    { story:'とりさんが、きいろくて まるい クッキーを 食べました。ちょうちょさんは、ピンクの お星さまの クッキーを 食べました。', q:'とりさんが 食べた クッキーは、どんな形だったかな？', a:'まるい形' },
+    { story:'カエルくんが 傘をさして、カタツムリくんが アジサイの葉っぱに乗って、カメくんが 長靴をはいて歩いています。', q:'長靴をはいて 歩いているのは、だれかな？', a:'カメくん' },
+    { story:'あさの お天気は 雨でしたが、おひるに なったら ピカピカの 晴れに なりました。', q:'おひるの お天気は、なにかな？', a:'晴れ' },
+  ],
+  3: [
+    { story:'うさぎくんは りんごを 食べました。くまくんは バナナを 食べました。きつねくんは、何も 食べませんでした。', q:'くだものを 食べなかったのは、だれかな？', a:'きつねくん' },
+    { story:'ねこちゃんが、最初に おめめを 洗いました。そのあとに、お耳を 洗いました。最後に、おててを 洗いました。', q:'ねこちゃんが、最後に 洗ったのは どこかな？', a:'おてて' },
+    { story:'お皿のうえに、クッキーが 3つ ありました。わんちゃんが 1つ パクリと 食べました。', q:'お皿のうえの クッキーは、のこり 何個になったかな？', a:'2個' },
+    { story:'ゾウさんは 大きなバケツ、キリンさんは 長いバケツ、カバさんは 青いバケツを 持ってお出かけしました。', q:'青いバケツを 持っているのは、だれかな？', a:'カバさん' },
+    { story:'パンダくんは、あかい 帽子をかぶって、しろい ズボンを はいています。', q:'パンダくんが はいている ズボンは、なに色かな？', a:'しろい色' },
+    { story:'ライオンくんの おうちの やねは、三角です。チーターくんの おうちの やねは、四角です。', q:'やねが 四角い おうちは、だれの おうちかな？', a:'チーターくん' },
+    { story:'ペンギンくんは、プールで 泳いだあとに、スイカを 食べて、そのあとに お昼寝を しました。', q:'ペンギンくんが、お昼寝の すぐ前に したことは なーんだ？', a:'スイカを食べたこと' },
+    { story:'お池に、お魚が 2匹 およいでいました。あとから、もう 2匹 スイスイと およいできました。', q:'お池の お魚は、ぜんぶで 何匹になったかな？', a:'4匹' },
+    { story:'リスくんは、どんぐりを 3つ 拾いました。でも、ポケットの 穴から 1つ ぽろんと 落としてしまいました。', q:'リスくんの 手元に のこっている どんぐりは、何個かな？', a:'2個' },
+    { story:'おもちゃ箱の中に、あかい車と、あおい車と、きいろい飛行機が 入っています。', q:'おもちゃ箱の中に入っている「飛行機」は、なに色かな？', a:'きいろ（黄色）' },
+  ],
+};
+
+const LEVEL_LABELS = { 1:'🌟 かんたん', 2:'🌟🌟 すこし挑戦', 3:'🌟🌟🌟 あたまのたいそう' };
+const NEXT_LEVEL_LABELS = { 1:'🌟🌟 すこし挑戦 に進む', 2:'🌟🌟🌟 あたまのたいそう に進む' };
+
+let currentLevel = 1;
+let currentIndex = 0;
+let correctCount = 0;
+let answered = 0;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startQuiz(level) {
+  currentLevel = level;
+  currentIndex = 0;
+  correctCount = 0;
+  answered = 0;
+  document.getElementById('headerTitle').textContent = LEVEL_LABELS[level];
+  document.getElementById('scoreChip').style.display = 'flex';
+  updateScoreChip();
+  loadQuestion();
+  showScreen('screenQuiz');
+}
+
+function loadQuestion() {
+  const q = QUIZDATA[currentLevel][currentIndex];
+  const total = QUIZDATA[currentLevel].length;
+
+  document.getElementById('qCount').textContent = (currentIndex + 1) + ' / ' + total + 'もん';
+  document.getElementById('levelLabel').textContent = LEVEL_LABELS[currentLevel];
+  document.getElementById('progressFill').style.width = ((currentIndex + 1) / total * 100) + '%';
+
+  document.getElementById('storyText').textContent = q.story;
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('storyText2').textContent = q.story;
+  document.getElementById('questionText2').textContent = q.q;
+  document.getElementById('answerText').textContent = q.a;
+
+  document.getElementById('phaseQuestion').style.display = 'block';
+  document.getElementById('phaseAnswer').style.display = 'none';
+}
+
+function showAnswer() {
+  document.getElementById('phaseQuestion').style.display = 'none';
+  document.getElementById('phaseAnswer').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function readAgain() {
+  document.getElementById('phaseAnswer').style.display = 'none';
+  document.getElementById('phaseQuestion').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function judge(isCorrect) {
+  if (isCorrect) correctCount++;
+  answered++;
+  updateScoreChip();
+  currentIndex++;
+
+  if (currentIndex < QUIZDATA[currentLevel].length) {
+    loadQuestion();
+    window.scrollTo(0, 0);
+  } else {
+    showResult();
+  }
+}
+
+function updateScoreChip() {
+  document.getElementById('scoreChip').textContent = '⭕ ' + correctCount + ' / ' + answered + 'もん';
+}
+
+function showResult() {
+  const total = QUIZDATA[currentLevel].length;
+  const rate = correctCount / total;
+
+  let emoji, title, sub;
+  if (rate === 1) {
+    emoji = '🎉'; title = 'かんぺき！ぜんもん せいかい！';
+    sub = 'すごい！よくきけていたね！\nまた挑戦してみよう';
+  } else if (rate >= 0.7) {
+    emoji = '😊'; title = correctCount + 'もん せいかい！';
+    sub = 'よくがんばったね！\nもういちど やってみよう';
+  } else if (rate >= 0.4) {
+    emoji = '🙂'; title = correctCount + 'もん せいかい！';
+    sub = 'よく チャレンジしたね！\nまた 一緒にやってみよう';
+  } else {
+    emoji = '💪'; title = correctCount + 'もん せいかい！';
+    sub = 'ちょっとむずかしかったね\nもういちど きいてみよう！';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('resultNum').textContent = correctCount;
+  document.getElementById('resultDenom').textContent = ' / ' + total;
+  document.getElementById('bdCorrect').textContent = correctCount;
+  document.getElementById('bdWrong').textContent = total - correctCount;
+
+  const stars = rate === 1 ? '⭐⭐⭐' : rate >= 0.7 ? '⭐⭐' : '⭐';
+  document.getElementById('resultStars').textContent = stars;
+
+  const nextBtn = document.getElementById('nextLevelBtn');
+  if (currentLevel < 3) {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = NEXT_LEVEL_LABELS[currentLevel];
+  } else {
+    nextBtn.style.display = 'none';
+  }
+
+  document.getElementById('scoreChip').style.display = 'none';
+  document.getElementById('headerTitle').textContent = '📖 けっか はっぴょう！';
+  showScreen('screenResult');
+}
+
+function goNextLevel() {
+  startQuiz(currentLevel + 1);
+}
+
+function retryLevel() {
+  startQuiz(currentLevel);
+}
+
+function goHome() {
+  document.getElementById('headerTitle').textContent = '📖 お話しクイズ';
+  showScreen('screenLevel');
+}
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  const active = document.querySelector('.screen.active').id;
+  if (active === 'screenLevel') {
+    window.location.href = 'index.html';
+  } else if (active === 'screenQuiz') {
+    if (confirm('クイズをやめてレベル選択に戻りますか？')) {
+      document.getElementById('scoreChip').style.display = 'none';
+      document.getElementById('headerTitle').textContent = '📖 お話しクイズ';
+      showScreen('screenLevel');
+    }
+  } else {
+    goHome();
+  }
+});
+</script>
+</body>
+</html>
